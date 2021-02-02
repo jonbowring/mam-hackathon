@@ -246,8 +246,14 @@ public class MediaController {
 	 * ------------------
 	 */
 	
+
 	public String HelloWorld() {
 		return "Hello world!";
+	}
+
+	public String HelloGit() {
+		return "Hello git!";	
+
 	}
 	
 	
