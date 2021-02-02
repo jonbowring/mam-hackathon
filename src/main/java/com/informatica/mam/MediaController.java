@@ -245,16 +245,7 @@ public class MediaController {
 	 * Helper methods
 	 * ------------------
 	 */
-	
 
-	public String HelloWorld() {
-		return "Hello world!";
-	}
-
-	public String HelloGit() {
-		return "Hello git!";	
-
-	}
 	
 	
 }
