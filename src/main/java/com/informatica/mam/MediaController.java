@@ -246,7 +246,9 @@ public class MediaController {
 	 * ------------------
 	 */
 	
-	
+	public String HelloGit() {
+		return "Hello git!";	
+	}
 	
 	
 }
