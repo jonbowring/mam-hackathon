@@ -246,7 +246,9 @@ public class MediaController {
 	 * ------------------
 	 */
 	
-	
+	public String HelloWorld() {
+		return "Hello world!";
+	}
 	
 	
 }
