@@ -125,7 +125,7 @@ public class MediaController {
 	
 	// GET's metadata media by id
 	@GetMapping("/media/{id}")
-	EntityModel<Media> one(@PathVariable Long id) {
+	EntityModel<Media> one(@PathVariable String id) {
 		Media media = repository.findById(id)
 				.orElseThrow(() -> new MediaNotFoundException(id));
 		
@@ -205,7 +205,7 @@ public class MediaController {
 	
 	// PUT's an updated metadata doc for an id
 	@PutMapping("/media/{id}")
-	ResponseEntity<?> replaceMedia(@RequestBody Media newMedia, @PathVariable Long id) {
+	ResponseEntity<?> replaceMedia(@RequestBody Media newMedia, @PathVariable String id) {
 		
 		Media updatedMedia = repository.findById(id) //
 				.map(media -> {
@@ -233,7 +233,7 @@ public class MediaController {
 	
 	// DELETE's a file and it's associated metadata
 	@DeleteMapping("/media/{id}")
-	ResponseEntity<?> deleteMedia(@PathVariable Long id) {
+	ResponseEntity<?> deleteMedia(@PathVariable String id) {
 
 	  repository.deleteById(id);
 
