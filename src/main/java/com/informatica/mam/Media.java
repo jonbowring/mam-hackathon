@@ -2,9 +2,7 @@ package com.informatica.mam;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
 
 /*
  * ------------------------------------------------------------------
@@ -14,11 +12,11 @@ import javax.persistence.Id;
  * ------------------------------------------------------------------
  */
 
-@Entity
 class Media {
 	
 	// Declare Media related attributes
-	private @Id @GeneratedValue Long id;
+	@Id
+	private String id;
 	private String fileName;
 	
 	/*
@@ -39,7 +37,7 @@ class Media {
 	 * ------------------
 	 */
 	
-	public Long getId() {
+	public String getId() {
 		return this.id;
 	}
 	
@@ -53,7 +51,7 @@ class Media {
 	 * ------------------
 	 */
 	
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	

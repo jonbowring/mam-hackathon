@@ -10,7 +10,7 @@ package com.informatica.mam;
 
 class MediaNotFoundException extends RuntimeException {
 	
-	MediaNotFoundException(Long id) {
+	MediaNotFoundException(String id) {
 		super("Media not found: " + id);
 	}
 	
