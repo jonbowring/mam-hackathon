@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.UUID;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
@@ -83,8 +84,8 @@ public class MediaController {
 	private Region s3Region;
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
-	@Value("${cloud.aws.bucket.name}")
-	private String s3Bucket;
+//	@Value("${cloud.aws.bucket.name}")
+	private String s3Bucket="jbowring-mam-hackathon";
 	@Value("${cloud.aws.credentials.access-key}")
 	private String s3Key;
 	
@@ -162,10 +163,10 @@ public class MediaController {
 		
 		// Loop through all of the posted files
 		for(MultipartFile multiFile : multiFiles) {
-			
+			String fileExtension = FilenameUtils.getExtension(multiFile.getOriginalFilename());
 			// Instantiate a new Media object
-			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename())));
-			
+			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize())));
+		
 			// Generate a temp file ID
 			UUID uuid = UUID.randomUUID();
 			
@@ -174,11 +175,11 @@ public class MediaController {
 			try (OutputStream os = new FileOutputStream(newFile)) {
 				os.write(multiFile.getBytes());
 			}
-			
+		String s3FileName=	entityModel.getContent().getId() +"/"+multiFile.getOriginalFilename();
 			// Upload the file to S3
 			PutObjectRequest objectRequest = PutObjectRequest.builder()
 					.bucket(s3Bucket)
-					.key(multiFile.getOriginalFilename())
+					.key(s3FileName)
 					.build();
 			PutObjectResponse s3Response = s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
 			

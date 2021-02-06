@@ -30,7 +30,7 @@ public class MamApiApplication implements CommandLineRunner {
 		//repository.deleteAll();
 		
 		// Save a few media docs
-		repository.save(new Media("HelloCluster.txt"));
+		//repository.save(new Media("HelloCluster.txt"));
 		
 		// Test print of saved docs
 		/*

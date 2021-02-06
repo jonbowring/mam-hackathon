@@ -18,6 +18,10 @@ class Media {
 	@Id
 	private String id;
 	private String fileName;
+	private String fileExtension;
+	private String mimeType;
+	private Long fileSize;
+	private String encoding;
 	
 	/*
 	 * ------------------
@@ -27,8 +31,11 @@ class Media {
 	
 	Media() {}
 	
-	Media(String fileName) {
+	Media(String fileName, String fileExtension,String mimeType,Long fileSize) {
 		this.fileName = fileName;
+		this.fileExtension=fileExtension;
+		this.mimeType=mimeType;
+		this.fileSize=fileSize;
 	}
 	
 	/*
@@ -36,6 +43,23 @@ class Media {
 	 * Getter Methods
 	 * ------------------
 	 */
+	
+	public String getFileExtension() {
+		return fileExtension;
+	}
+
+
+
+	public String getMimeType() {
+		return mimeType;
+	}
+
+	
+	public Long getFileSize() {
+		return fileSize;
+	}
+
+
 	
 	public String getId() {
 		return this.id;
@@ -59,6 +83,19 @@ class Media {
 		this.fileName = fileName;
 	}
 	
+	
+
+	public void setFileSize(Long fileSize) {
+		this.fileSize = fileSize;
+	}
+	
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
+
+	public void setFileExtension(String fileExtension) {
+		this.fileExtension = fileExtension;
+	}
 	/*
 	 * ------------------
 	 * Other Methods
@@ -84,19 +121,20 @@ class Media {
 		
 		// Check if the object properties match and then return the result
 		return Objects.equals(this.id, media.id) &&
-				Objects.equals(this.fileName, media.fileName);
+				Objects.equals(this.fileName, media.fileName) && Objects.equals(this.fileSize, media.fileSize) && Objects.equals(this.fileExtension, media.fileExtension)
+				&& Objects.equals(this.mimeType, media.mimeType);
 	}
 	
 	// This function generates a hash code for the current instance
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.id, this.fileName);
+		return Objects.hash(this.id, this.fileName,this.fileExtension,this.fileSize,this.mimeType);
 	}
 	
 	// This function returns a string representation of the current instance
 	@Override
 	public String toString() {
-		return "Media {" + "id=" + this.id + ", fileName='" + this.fileName + "' }";
+		return "Media {" + "id=" + this.id + ", fileName='" + this.fileName + "'" + ", fileSize=" + this.fileSize + ", fileExtension='"+ this.fileExtension+"'}";
 	}
 	
 	
