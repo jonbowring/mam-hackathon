@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.UUID;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
@@ -29,8 +30,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Random;
@@ -83,11 +87,11 @@ public class MediaController {
 	private Region s3Region;
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
-	@Value("${cloud.aws.bucket.name}")
-	private String s3Bucket;
+//	@Value("${cloud.aws.bucket.name}")
+	private String s3Bucket="jbowring-mam-hackathon";
 	@Value("${cloud.aws.credentials.access-key}")
 	private String s3Key;
-	
+    private	String fileEncoding;
 	/*
 	 * ------------------
 	 * Constructors
@@ -159,12 +163,11 @@ public class MediaController {
 		
 		// Instantiate the medias list
 		List<EntityModel<Media>> medias = new ArrayList<>();
-		
+
 		// Loop through all of the posted files
 		for(MultipartFile multiFile : multiFiles) {
+			String fileExtension = FilenameUtils.getExtension(multiFile.getOriginalFilename());
 			
-			// Instantiate a new Media object
-			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename())));
 			
 			// Generate a temp file ID
 			UUID uuid = UUID.randomUUID();
@@ -173,12 +176,20 @@ public class MediaController {
 			File newFile = new File(uuid.toString() + ".tmp");
 			try (OutputStream os = new FileOutputStream(newFile)) {
 				os.write(multiFile.getBytes());
+				
+				InputStream fs = new FileInputStream(newFile);
+				InputStreamReader   isr = new InputStreamReader(fs);
+				 fileEncoding=isr.getEncoding();
 			}
 			
+			// Instantiate a new Media object
+	EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding)));
+					
+		String s3FileName=	entityModel.getContent().getId() +"/"+multiFile.getOriginalFilename();
 			// Upload the file to S3
 			PutObjectRequest objectRequest = PutObjectRequest.builder()
 					.bucket(s3Bucket)
-					.key(multiFile.getOriginalFilename())
+					.key(s3FileName)
 					.build();
 			PutObjectResponse s3Response = s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
 			
