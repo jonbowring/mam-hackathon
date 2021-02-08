@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -39,6 +40,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.waiters.WaiterResponse;
@@ -87,11 +89,16 @@ public class MediaController {
 	private Region s3Region;
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
-//	@Value("${cloud.aws.bucket.name}")
-	private String s3Bucket="jbowring-mam-hackathon";
-	@Value("${cloud.aws.credentials.access-key}")
-	private String s3Key;
-    private	String fileEncoding;
+
+	@Value("${cloud.aws.bucket.name}")
+	private String s3Bucket;
+	//@Value("${cloud.aws.access-key}")
+	//private String s3AccessKey;
+	//@Value("${cloud.aws.secret-key}")
+	//private String s3SecretKey;
+	private	String fileEncoding;
+	
+
 	/*
 	 * ------------------
 	 * Constructors
@@ -101,7 +108,6 @@ public class MediaController {
 	MediaController(MediaRepository repository, MediaAssembler assembler) {
 		this.repository = repository;
 		this.assembler = assembler;
-		
 		// Configure the AWS S3 client
 		this.s3Region = Region.AP_SOUTHEAST_2;
 		//this.s3Region = Region.of(s3RegionName);
