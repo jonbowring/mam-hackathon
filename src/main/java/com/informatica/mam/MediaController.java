@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
@@ -28,8 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sun.xml.messaging.saaj.util.ByteInputStream;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -157,6 +162,48 @@ public class MediaController {
 
 	}
 	
+	// GET's a zip containing one or more files
+	@GetMapping("/media/file")
+	@ResponseBody void getFiles(@RequestBody FileList req, OutputStream os) throws NoSuchKeyException, S3Exception, AwsServiceException, SdkClientException, IOException {
+		
+		// Initialise the zip output stream and link it to the response output stream
+		ZipOutputStream zos = new ZipOutputStream(os);
+		
+		// Loop through each of the requested files
+		for(String file : req.getFiles()) {
+			
+			// Check if the file exists in MongoDB
+			Media media = repository.findByFileName(file)
+					.orElseThrow(() -> new MediaNotFoundException(file));
+			
+			// Build a request to download the file from S3
+			GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+			        .bucket(s3Bucket)
+			        .key(media.getId() + "/" + file)
+			        .build();
+			
+			// Download the file and initialise the zip entry
+			byte[] s3Bytes = IOUtils.toByteArray(s3.getObject(getObjectRequest));
+			ByteArrayInputStream fis = new ByteArrayInputStream(s3Bytes);
+			ZipEntry zipEntry = new ZipEntry(file);
+			zos.putNextEntry(zipEntry);
+			
+			// Add the downloaded file into the zip
+			int length;
+			while((length = fis.read(s3Bytes)) >= 0) {
+				zos.write(s3Bytes, 0, length);
+			}
+			
+			// Close the file input stream
+			fis.close();
+			
+		}
+		
+		// Close the zip output stream
+		zos.close();
+		
+	}
+	
 	/*
 	 * ------------------
 	 * POST end points
@@ -211,7 +258,6 @@ public class MediaController {
 				linkTo(methodOn(MediaController.class).all()).withSelfRel());
 		
 	}
-	
 	
 	
 	/*
