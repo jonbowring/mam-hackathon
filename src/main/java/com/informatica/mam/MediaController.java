@@ -2,7 +2,9 @@ package com.informatica.mam;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -172,30 +174,68 @@ public class MediaController {
 		// Loop through each of the requested files
 		for(String file : req.getFiles()) {
 			
-			// Check if the file exists in MongoDB
-			Media media = repository.findByFileName(file)
-					.orElseThrow(() -> new MediaNotFoundException(file));
+			// Find matching files in the MongoDB
+			List<Media> medias = repository.findByFileName(file);
 			
-			// Build a request to download the file from S3
-			GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-			        .bucket(s3Bucket)
-			        .key(media.getId() + "/" + file)
-			        .build();
+			// Sort the medias by the file name
+			medias.sort(Comparator.comparing(Media::getFileName));
 			
-			// Download the file and initialise the zip entry
-			byte[] s3Bytes = IOUtils.toByteArray(s3.getObject(getObjectRequest));
-			ByteArrayInputStream fis = new ByteArrayInputStream(s3Bytes);
-			ZipEntry zipEntry = new ZipEntry(file);
-			zos.putNextEntry(zipEntry);
-			
-			// Add the downloaded file into the zip
-			int length;
-			while((length = fis.read(s3Bytes)) >= 0) {
-				zos.write(s3Bytes, 0, length);
+			// Loop through the media found in the DB
+			String prevFile = "";
+			int fileCounter = 0;
+			for(Media tmpMedia : medias) {
+				
+				// Build a request to download the file from S3
+				GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+				        .bucket(s3Bucket)
+				        .key(tmpMedia.getId() + "/" + tmpMedia.getFileName())
+				        .build();
+				
+				// Download the file and initialise the zip entry
+				byte[] s3Bytes = IOUtils.toByteArray(s3.getObject(getObjectRequest));
+				ByteArrayInputStream fis = new ByteArrayInputStream(s3Bytes);
+				
+				// Initialise the variables for post fixing the file name
+				String currFile = tmpMedia.getFileName();
+				String zipFile = "";
+				String tokens[] = currFile.split("\\.(?=[^\\.]+$)");
+				
+				// If the curr media has the same file name as the previous file then postfix it
+				// Also handle files that do and don't have a file extension for the post fixing
+				if(currFile.equals(prevFile)) {
+					fileCounter++;
+					if(tokens.length == 1) {
+						zipFile = tokens[0] + " (" + fileCounter + ")";
+					}
+					else if(tokens.length == 2) {
+						zipFile = tokens[0] + " (" + fileCounter + ")." + tokens[1];
+					}
+					else {
+						zipFile = currFile;
+					}
+					
+				}
+				// Else reset the counter
+				else {
+					fileCounter = 0;
+					zipFile = currFile;
+				}
+				
+				// Add the file to the zip
+				ZipEntry zipEntry = new ZipEntry(zipFile);
+				zos.putNextEntry(zipEntry);
+				int length;
+				while((length = fis.read(s3Bytes)) >= 0) {
+					zos.write(s3Bytes, 0, length);
+				}
+				
+				// Close the file input stream
+				fis.close();
+				
+				// Update the prevFile to check for post fixing
+				prevFile = tmpMedia.getFileName();
+				
 			}
-			
-			// Close the file input stream
-			fis.close();
 			
 		}
 		

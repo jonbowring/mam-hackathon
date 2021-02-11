@@ -1,6 +1,9 @@
 package com.informatica.mam;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import java.io.OutputStream;
+
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

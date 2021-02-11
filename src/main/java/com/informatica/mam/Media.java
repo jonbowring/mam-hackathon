@@ -149,6 +149,7 @@ class Media {
 	public String toString() {
 		return "Media {" + "id=" + this.id + ", fileName='" + this.fileName + "'" + ", fileSize=" + this.fileSize + ", fileExtension='"+ this.fileExtension+"'" +", fileEncoding='"+ this.fileEncoding+"'}";
 	}
+
 	
 	
 }
