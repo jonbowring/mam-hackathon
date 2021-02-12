@@ -2,8 +2,12 @@ package com.informatica.mam;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
@@ -28,8 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sun.xml.messaging.saaj.util.ByteInputStream;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -157,6 +164,86 @@ public class MediaController {
 
 	}
 	
+	// GET's a zip containing one or more files
+	@GetMapping("/media/file")
+	@ResponseBody void getFiles(@RequestBody FileList req, OutputStream os) throws NoSuchKeyException, S3Exception, AwsServiceException, SdkClientException, IOException {
+		
+		// Initialise the zip output stream and link it to the response output stream
+		ZipOutputStream zos = new ZipOutputStream(os);
+		
+		// Loop through each of the requested files
+		for(String file : req.getFiles()) {
+			
+			// Find matching files in the MongoDB
+			List<Media> medias = repository.findByFileName(file);
+			
+			// Sort the medias by the file name
+			medias.sort(Comparator.comparing(Media::getFileName));
+			
+			// Loop through the media found in the DB
+			String prevFile = "";
+			int fileCounter = 0;
+			for(Media tmpMedia : medias) {
+				
+				// Build a request to download the file from S3
+				GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+				        .bucket(s3Bucket)
+				        .key(tmpMedia.getId() + "/" + tmpMedia.getFileName())
+				        .build();
+				
+				// Download the file and initialise the zip entry
+				byte[] s3Bytes = IOUtils.toByteArray(s3.getObject(getObjectRequest));
+				ByteArrayInputStream fis = new ByteArrayInputStream(s3Bytes);
+				
+				// Initialise the variables for post fixing the file name
+				String currFile = tmpMedia.getFileName();
+				String zipFile = "";
+				String tokens[] = currFile.split("\\.(?=[^\\.]+$)");
+				
+				// If the curr media has the same file name as the previous file then postfix it
+				// Also handle files that do and don't have a file extension for the post fixing
+				if(currFile.equals(prevFile)) {
+					fileCounter++;
+					if(tokens.length == 1) {
+						zipFile = tokens[0] + " (" + fileCounter + ")";
+					}
+					else if(tokens.length == 2) {
+						zipFile = tokens[0] + " (" + fileCounter + ")." + tokens[1];
+					}
+					else {
+						zipFile = currFile;
+					}
+					
+				}
+				// Else reset the counter
+				else {
+					fileCounter = 0;
+					zipFile = currFile;
+				}
+				
+				// Add the file to the zip
+				ZipEntry zipEntry = new ZipEntry(zipFile);
+				zos.putNextEntry(zipEntry);
+				int length;
+				while((length = fis.read(s3Bytes)) >= 0) {
+					zos.write(s3Bytes, 0, length);
+				}
+				
+				// Close the file input stream
+				fis.close();
+				
+				// Update the prevFile to check for post fixing
+				prevFile = tmpMedia.getFileName();
+				
+			}
+			
+		}
+		
+		// Close the zip output stream
+		zos.close();
+		
+	}
+	
 	/*
 	 * ------------------
 	 * POST end points
@@ -211,7 +298,6 @@ public class MediaController {
 				linkTo(methodOn(MediaController.class).all()).withSelfRel());
 		
 	}
-	
 	
 	
 	/*
