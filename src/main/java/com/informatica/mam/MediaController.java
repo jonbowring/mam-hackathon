@@ -2,12 +2,18 @@ package com.informatica.mam;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import java.util.UUID;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -26,15 +32,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sun.xml.messaging.saaj.util.ByteInputStream;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.waiters.WaiterResponse;
@@ -83,11 +96,16 @@ public class MediaController {
 	private Region s3Region;
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
+
 	@Value("${cloud.aws.bucket.name}")
 	private String s3Bucket;
-	@Value("${cloud.aws.credentials.access-key}")
-	private String s3Key;
+	//@Value("${cloud.aws.access-key}")
+	//private String s3AccessKey;
+	//@Value("${cloud.aws.secret-key}")
+	//private String s3SecretKey;
+	private	String fileEncoding;
 	
+
 	/*
 	 * ------------------
 	 * Constructors
@@ -97,7 +115,6 @@ public class MediaController {
 	MediaController(MediaRepository repository, MediaAssembler assembler) {
 		this.repository = repository;
 		this.assembler = assembler;
-		
 		// Configure the AWS S3 client
 		this.s3Region = Region.AP_SOUTHEAST_2;
 		//this.s3Region = Region.of(s3RegionName);
@@ -147,6 +164,86 @@ public class MediaController {
 
 	}
 	
+	// GET's a zip containing one or more files
+	@GetMapping("/media/file")
+	@ResponseBody void getFiles(@RequestBody FileList req, OutputStream os) throws NoSuchKeyException, S3Exception, AwsServiceException, SdkClientException, IOException {
+		
+		// Initialise the zip output stream and link it to the response output stream
+		ZipOutputStream zos = new ZipOutputStream(os);
+		
+		// Loop through each of the requested files
+		for(String file : req.getFiles()) {
+			
+			// Find matching files in the MongoDB
+			List<Media> medias = repository.findByFileName(file);
+			
+			// Sort the medias by the file name
+			medias.sort(Comparator.comparing(Media::getFileName));
+			
+			// Loop through the media found in the DB
+			String prevFile = "";
+			int fileCounter = 0;
+			for(Media tmpMedia : medias) {
+				
+				// Build a request to download the file from S3
+				GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+				        .bucket(s3Bucket)
+				        .key(tmpMedia.getId() + "/" + tmpMedia.getFileName())
+				        .build();
+				
+				// Download the file and initialise the zip entry
+				byte[] s3Bytes = IOUtils.toByteArray(s3.getObject(getObjectRequest));
+				ByteArrayInputStream fis = new ByteArrayInputStream(s3Bytes);
+				
+				// Initialise the variables for post fixing the file name
+				String currFile = tmpMedia.getFileName();
+				String zipFile = "";
+				String tokens[] = currFile.split("\\.(?=[^\\.]+$)");
+				
+				// If the curr media has the same file name as the previous file then postfix it
+				// Also handle files that do and don't have a file extension for the post fixing
+				if(currFile.equals(prevFile)) {
+					fileCounter++;
+					if(tokens.length == 1) {
+						zipFile = tokens[0] + " (" + fileCounter + ")";
+					}
+					else if(tokens.length == 2) {
+						zipFile = tokens[0] + " (" + fileCounter + ")." + tokens[1];
+					}
+					else {
+						zipFile = currFile;
+					}
+					
+				}
+				// Else reset the counter
+				else {
+					fileCounter = 0;
+					zipFile = currFile;
+				}
+				
+				// Add the file to the zip
+				ZipEntry zipEntry = new ZipEntry(zipFile);
+				zos.putNextEntry(zipEntry);
+				int length;
+				while((length = fis.read(s3Bytes)) >= 0) {
+					zos.write(s3Bytes, 0, length);
+				}
+				
+				// Close the file input stream
+				fis.close();
+				
+				// Update the prevFile to check for post fixing
+				prevFile = tmpMedia.getFileName();
+				
+			}
+			
+		}
+		
+		// Close the zip output stream
+		zos.close();
+		
+	}
+	
 	/*
 	 * ------------------
 	 * POST end points
@@ -159,12 +256,11 @@ public class MediaController {
 		
 		// Instantiate the medias list
 		List<EntityModel<Media>> medias = new ArrayList<>();
-		
+
 		// Loop through all of the posted files
 		for(MultipartFile multiFile : multiFiles) {
+			String fileExtension = FilenameUtils.getExtension(multiFile.getOriginalFilename());
 			
-			// Instantiate a new Media object
-			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename())));
 			
 			// Generate a temp file ID
 			UUID uuid = UUID.randomUUID();
@@ -173,12 +269,20 @@ public class MediaController {
 			File newFile = new File(uuid.toString() + ".tmp");
 			try (OutputStream os = new FileOutputStream(newFile)) {
 				os.write(multiFile.getBytes());
+				
+				InputStream fs = new FileInputStream(newFile);
+				InputStreamReader   isr = new InputStreamReader(fs);
+				 fileEncoding=isr.getEncoding();
 			}
 			
+			// Instantiate a new Media object
+	EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding)));
+					
+		String s3FileName=	entityModel.getContent().getId() +"/"+multiFile.getOriginalFilename();
 			// Upload the file to S3
 			PutObjectRequest objectRequest = PutObjectRequest.builder()
 					.bucket(s3Bucket)
-					.key(multiFile.getOriginalFilename())
+					.key(s3FileName)
 					.build();
 			PutObjectResponse s3Response = s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
 			
@@ -194,7 +298,6 @@ public class MediaController {
 				linkTo(methodOn(MediaController.class).all()).withSelfRel());
 		
 	}
-	
 	
 	
 	/*
