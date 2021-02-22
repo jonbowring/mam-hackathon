@@ -22,6 +22,7 @@ class Media {
 	private String mimeType;
 	private Long fileSize;
 	private String fileEncoding;
+	private String url;
 	
 	/*
 	 * ------------------
@@ -73,7 +74,11 @@ class Media {
 	}
 	
 	public String getFileEncoding() {
-		return fileEncoding;
+		return this.fileEncoding;
+	}
+	
+	public String getUrl() {
+		return this.url;
 	}
 
 	
@@ -107,6 +112,10 @@ class Media {
 	
 	public void setFileEncoding(String fileEncoding) {
 		this.fileEncoding = fileEncoding;
+	}
+	
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	/*
