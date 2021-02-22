@@ -97,8 +97,8 @@ public class MediaController {
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
 
-	@Value("${cloud.aws.bucket.name}")
-	private String s3Bucket;
+	//@Value("${cloud.aws.bucket.name}")
+	private String s3Bucket="jbowring-mam-hackathon";
 	//@Value("${cloud.aws.access-key}")
 	//private String s3AccessKey;
 	//@Value("${cloud.aws.secret-key}")
