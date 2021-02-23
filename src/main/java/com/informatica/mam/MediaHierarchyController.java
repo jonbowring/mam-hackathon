@@ -156,15 +156,11 @@ public class MediaHierarchyController {
 	 * ------------------
 	 */
 	
-	// POSTs a new file to the application. Creates the metadata doc and uploads the file.
-	@PostMapping("/hierarchy")
+	// POSTs a new media Hierarchy.
+	@PostMapping("/mediaHierarchy/create")
 	MediaHierarchy newMediaHierchy(@RequestBody MediaHierarchy mediaHierarchy) throws S3Exception, AwsServiceException, SdkClientException, IOException {
 		
-		//List tmp = new ArrayList<MediaHierarchy>();
-		//tmp.add(new MediaHierarchy("Child1"));
-		//tmp.add(new MediaHierarchy("Child2"));
 		
-		//repository.save(new MediaHierarchy("Test", tmp));
 		repository.save(mediaHierarchy);
 		return mediaHierarchy;
 		
@@ -181,9 +177,17 @@ public class MediaHierarchyController {
 		MediaHierarchy replaceMedia(@RequestBody MediaHierarchy newMedia, @PathVariable String id) {
 			
 			
-			MediaHierarchy updatedMedia = repository.findById(id) //
+			MediaHierarchy updatedMedia = repository.findById(id)
 					.map(mediaHierarchy -> {
-						mediaHierarchy.setHierarchyName("updating Name");
+						if(newMedia.getHierarchyName()!=null) {
+						mediaHierarchy.setHierarchyName(newMedia.getHierarchyName());
+						}
+						if(newMedia.getHierarchyCode()!=null) {
+							mediaHierarchy.setHierarchyCode(newMedia.getHierarchyCode());
+							}
+						if(newMedia.getChildren()!=null) {
+							mediaHierarchy.setChildren(newMedia.getChildren());
+							}
 						
 						return repository.save(mediaHierarchy);
 					})
@@ -191,10 +195,12 @@ public class MediaHierarchyController {
 						newMedia.setId(id);
 						return repository.save(newMedia);
 					});
-			
-			
-			
 			return updatedMedia;
+					
+			
+			
+			
+		
 			
 		}
 	

@@ -45,28 +45,32 @@ public class MediaHierarchy {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getChildren() {
-		return children.toString();
-	}
-
-	public void setChildren(List<MediaHierarchy> children) {
-		this.children = children;
-	}
-
-	public void setHierarchy(String hierarchyCode) {
-		this.hierarchyCode = hierarchyCode;
+	
+	public List<MediaHierarchy> getChildren() {
+		return children;
 	}
 	
 	public String getHierarchyName() {
 		return hierarchyName;
 	}
+	
+	/* Setter Methods*/
+
+	public void setChildren(List<MediaHierarchy> children) {
+		this.children = children;
+	}
+
+	public void setHierarchyCode(String hierarchyCode) {
+		this.hierarchyCode = hierarchyCode;
+	}
+	
+	
 
 	public void setHierarchyName(String hierarchyName) {
 		this.hierarchyName = hierarchyName;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	

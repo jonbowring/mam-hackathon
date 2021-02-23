@@ -13,8 +13,6 @@ import com.mongodb.client.MongoClients;
 @SpringBootApplication
 public class MamApiApplication implements CommandLineRunner {
 
-	@Autowired
-	private MediaRepository repository;
 	
 	public static void main(String[] args) {
 		
