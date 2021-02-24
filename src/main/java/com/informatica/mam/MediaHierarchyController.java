@@ -127,7 +127,7 @@ public class MediaHierarchyController {
 	 * ------------------
 	 */
 	
-	// GET's metadata for all media
+	// GET's metadata for all mediaHierarchy
 	@GetMapping("/mediaHierarchy")
 	
 	CollectionModel<MediaHierarchy> all() {
@@ -195,7 +195,7 @@ public class MediaHierarchyController {
 						newMedia.setId(id);
 						return repository.save(newMedia);
 					});
-			return updatedMedia;
+			return newMedia;
 					
 			
 			
@@ -203,6 +203,7 @@ public class MediaHierarchyController {
 		
 			
 		}
+		
 	
 	// PUT's an updated metadata doc for an id
 	
