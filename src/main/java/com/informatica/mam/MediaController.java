@@ -323,7 +323,16 @@ public class MediaController {
 		
 		Media updatedMedia = repository.findById(id) //
 				.map(media -> {
+					if(null!=newMedia.getFileExtension())
+					media.setFileExtension(newMedia.getFileExtension());
+					if(null!=newMedia.getFileName())
 					media.setFileName(newMedia.getFileName());
+					if(null!=newMedia.getFileSize())
+					media.setFileSize(newMedia.getFileSize());
+					if(null!=newMedia.getFileEncoding())
+					media.setFileEncoding(newMedia.getFileEncoding());
+					if(null!=newMedia.getMimeType())
+					media.setMimeType(newMedia.getMimeType());
 					return repository.save(media);
 				})
 				.orElseGet(() -> {
