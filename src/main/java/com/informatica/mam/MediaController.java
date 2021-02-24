@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -63,6 +64,7 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest.Builder;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
@@ -97,8 +99,11 @@ public class MediaController {
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
 
-	//@Value("${cloud.aws.bucket.name}")
-	private String s3Bucket="jbowring-mam-hackathon";
+	
+
+	@Value("${cloud.aws.bucket.name}")
+	private String s3Bucket;
+	//private String s3Bucket="jbowring-mam-hackathon";
 	//@Value("${cloud.aws.access-key}")
 	//private String s3AccessKey;
 	//@Value("${cloud.aws.secret-key}")
@@ -276,15 +281,24 @@ public class MediaController {
 			}
 			
 			// Instantiate a new Media object
-	EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding)));
+			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding)));
 					
-		String s3FileName=	entityModel.getContent().getId() +"/"+multiFile.getOriginalFilename();
+			String s3FileName=	entityModel.getContent().getId() +"/"+multiFile.getOriginalFilename();
 			// Upload the file to S3
 			PutObjectRequest objectRequest = PutObjectRequest.builder()
 					.bucket(s3Bucket)
 					.key(s3FileName)
 					.build();
 			PutObjectResponse s3Response = s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
+			
+			// Get the public URL and save it to the database
+			String url = s3.utilities().getUrl(builder -> builder.bucket(s3Bucket).key(s3FileName)).toExternalForm();
+			//entityModel.getContent().setUrl(url);
+			//Optional<Media> urlMedia = repository.findById(entityModel.getContent().getId());
+			Media urlMedia = repository.findById(entityModel.getContent().getId())
+					.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
+			urlMedia.setUrl(url);
+			repository.save(urlMedia);
 			
 			// Delete the temp file
 			newFile.delete();
@@ -312,7 +326,16 @@ public class MediaController {
 		
 		Media updatedMedia = repository.findById(id) //
 				.map(media -> {
+					if(null!=newMedia.getFileExtension())
+					media.setFileExtension(newMedia.getFileExtension());
+					if(null!=newMedia.getFileName())
 					media.setFileName(newMedia.getFileName());
+					if(null!=newMedia.getFileSize())
+					media.setFileSize(newMedia.getFileSize());
+					if(null!=newMedia.getFileEncoding())
+					media.setFileEncoding(newMedia.getFileEncoding());
+					if(null!=newMedia.getMimeType())
+					media.setMimeType(newMedia.getMimeType());
 					return repository.save(media);
 				})
 				.orElseGet(() -> {

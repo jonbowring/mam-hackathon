@@ -35,5 +35,4 @@ build/
 
 ### Other files ###
 application.properties
-
-/5ca35fc3-02ba-4a9c-9b24-ad48be17c86d.tmp
+*.tmp
