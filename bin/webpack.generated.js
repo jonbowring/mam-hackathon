@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 /**
  * NOTICE: this is an auto-generated file
  *
@@ -292,7 +292,7 @@ function collectModules(statsJson, acceptedChunks) {
   }
   return modules;
 }
-=======
+
 /**
  * NOTICE: this is an auto-generated file
  *
@@ -586,4 +586,4 @@ function collectModules(statsJson, acceptedChunks) {
   }
   return modules;
 }
->>>>>>> branch 'master' of https://github.com/jonbowring/mam-hackathon.git
+
