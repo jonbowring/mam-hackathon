@@ -17,6 +17,6 @@ import org.springframework.hateoas.EntityModel;
 interface MediaHierarchyRepository extends MongoRepository<MediaHierarchy, String> {
 	
 
-	public List findByHierarchy(String hierarchyCode);
+	public List findByHierarchyCode(String hierarchyCode);
 	
 }

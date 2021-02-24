@@ -195,7 +195,7 @@ public class MediaHierarchyController {
 						newMedia.setId(id);
 						return repository.save(newMedia);
 					});
-			return newMedia;
+			return updatedMedia;
 					
 			
 			
