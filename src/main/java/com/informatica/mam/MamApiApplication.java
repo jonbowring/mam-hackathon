@@ -5,6 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
@@ -16,8 +18,6 @@ import com.mongodb.client.MongoClients;
 @SpringBootApplication
 public class MamApiApplication implements CommandLineRunner {
 
-	@Autowired
-	private MediaRepository repository;
 	
 	public static void main(String[] args) {
 		
