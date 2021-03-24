@@ -1,0 +1,140 @@
+/*
+* =======================================
+* Resets
+* =======================================
+*/
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default padding */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* Remove list styles on ul, ol elements with a class attribute */
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Natural flow and rhythm in articles by default */
+article > * + * {
+  margin-top: 1em;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/*
+* =======================================
+* Desktop Styling
+* =======================================
+*/
+
+/*
+* Layouts
+* ---------------------------------------
+*/
+
+.App {
+  width: 100%;
+  min-height: 100vh;
+  display: grid;
+  justify-items: stretch;
+  align-items: stretch;
+  justify-content: stretch;
+  align-content: stretch;
+  grid-template-columns: 20vw 80vw;
+  grid-template-rows: 10vh 10vh 1fr 10vh;
+}
+
+.app-header {
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 1;
+}
+
+.app-nav {
+  grid-column: 1 / span 2;
+  grid-row: 2 / span 1;
+}
+
+.app-content {
+  grid-column: 2 / span 1;
+  grid-row: 3 / span 1;
+}
+
+.app-aside {
+  grid-column: 1 / span 1;
+  grid-row: 3 / span 1;
+}
+
+.app-footer {
+  grid-column: 1 / span 2;
+  grid-row: 4 / span 1;
+}
+
+
+
+/*
+* Elements
+* ---------------------------------------
+*/
+
+
+
+/*
+* Classes
+* ---------------------------------------
+*/
+
+.app-header, .app-nav, .app-content, .app-footer, .app-aside {
+  border: solid 1px red;
+}
