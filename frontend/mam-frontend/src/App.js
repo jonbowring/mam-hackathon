@@ -24,9 +24,22 @@ class App extends React.Component {
         newMedias.push(new MediaModel(data));
       });
       this.setState( {medias: newMedias });
+      console.log(this.state.medias);
     });
   }
-  
+
+  handleClick() {
+    //this.state.medias[0].update({ "fileExtension": "basu" });
+    //this.state.medias[0].delete();
+    let newMedias = this.state.medias;
+    //newMedias[0] = newMedias[0].refresh();
+    /*
+    this.setState({
+      medias: newMedias
+    });
+    */
+    newMedias[0].refresh()
+  }
   
   render() {
     
@@ -48,6 +61,12 @@ class App extends React.Component {
                 })
             }
           </ul>
+          <button onClick={() => this.handleClick()}>Update</button>
+            {
+                this.state.medias.map((media, index) => {
+                  return <img src={ media.url} />
+                })
+            }
         </section>
         <footer className="app-footer">
           <h1>Footer</h1>
