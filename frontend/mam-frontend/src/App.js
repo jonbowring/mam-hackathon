@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import './App.css';
 import { MediaModel } from './MediaModel';
@@ -20,10 +19,11 @@ class App extends React.Component {
       url: 'http://localhost:8080/media'
     })
     .then((response) => {
+      let newMedias = this.state.medias;
       response.data._embedded.medias.map((data, i) => {
-        this.state.medias.push(new MediaModel(data));
+        newMedias.push(new MediaModel(data));
       });
-      console.log(this.state.medias);
+      this.setState( {medias: newMedias });
     });
   }
   
@@ -41,6 +41,13 @@ class App extends React.Component {
         </nav>
         <section className="app-content">
           <h1>Content</h1>
+          <ul>
+            {
+                this.state.medias.map((media, index) => {
+                  return <li key={ media.id }>{ media.fileName }</li>;
+                })
+            }
+          </ul>
         </section>
         <footer className="app-footer">
           <h1>Footer</h1>
