@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export class MediaModel {
 	
 	constructor(data) {
@@ -8,6 +10,41 @@ export class MediaModel {
         this.fileSize = data.fileSize;
         this.fileEncoding = data.fileEncoding;
         this.url = data.url
+	}
+
+	refresh() {
+		let newMedia = null;
+		
+		axios({
+			method: 'get',
+			url: 'http://localhost:8080/media/' + this.id
+		})
+		.then((response) => {
+			console.log(response);
+		});
+
+		return newMedia;
+	}
+
+	update(data) {
+		axios({
+			method: 'put',
+			url: 'http://localhost:8080/media/' + this.id,
+			data: data
+		})
+		.then((response) => {
+			console.log(response)
+		});
+	}
+
+	delete() {
+		axios({
+			method: 'delete',
+			url: 'http://localhost:8080/media/' + this.id
+		})
+		.then((response) => {
+			console.log(response)
+		});
 	}
 
 }
