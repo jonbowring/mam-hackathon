@@ -26,6 +26,7 @@ export class MediaModel {
 		return newMedia;
 	}
 
+
 	update(data) {
 		axios({
 			method: 'put',
