@@ -8,6 +8,8 @@ class App extends React.Component {
   
   constructor(props) {
     super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.fileInput = React.createRef();
     this.state = {
       medias: []
     }
@@ -40,6 +42,33 @@ class App extends React.Component {
     */
     newMedias[0].refresh()
   }
+
+  handleSubmit(event) {
+    
+    // Prevent the default submit
+    event.preventDefault();
+
+    // Define API constants
+    const url = 'http://localhost:8080/media';
+    const formData = new FormData();
+    const config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }
+    
+    // Loop through each file and append them to the form
+    Object.keys(this.fileInput.current.files).forEach(key => {
+      formData.append("files", this.fileInput.current.files[key]);
+    });
+    
+    // Send the files to the backend
+    axios.post(url, formData,config)
+    .catch(function (error) {
+      console.log(error);
+    });
+    
+  }
   
   render() {
     
@@ -54,6 +83,10 @@ class App extends React.Component {
         </nav>
         <section className="app-content">
           <h1>Content</h1>
+          <form onSubmit={this.handleSubmit}>
+            <input type="file" ref={this.fileInput} multiple/>
+            <button type="submit">Submit</button>
+          </form>
           <ul>
             {
                 this.state.medias.map((media, index) => {
