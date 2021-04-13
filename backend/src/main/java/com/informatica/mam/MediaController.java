@@ -15,11 +15,14 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -156,16 +159,34 @@ public class MediaController {
 	
 	// GET's a file by id
 	@GetMapping("/media/{id}/file")
-	@ResponseBody byte[] oneFile(@PathVariable Long id) throws NoSuchKeyException, S3Exception, AwsServiceException, SdkClientException, IOException {
+	@ResponseBody ResponseEntity<byte[]> oneFile(@PathVariable String id) throws NoSuchKeyException, S3Exception, AwsServiceException, SdkClientException, IOException {
+		
+		// Get the requested media metadata
+		Media media = repository.findById(id)
+				.orElseThrow(() -> new MediaNotFoundException(id));
 		
 		// Build a request to download the file from S3
 		GetObjectRequest getObjectRequest = GetObjectRequest.builder()
 		        .bucket(s3Bucket)
-		        .key("test.png")
+		        .key(id + "/" + media.getFileName())
 		        .build();
 		
-		// Download the file
-		return IOUtils.toByteArray(s3.getObject(getObjectRequest));
+		// Download the file from S3
+		byte[] fileBytes = IOUtils.toByteArray(s3.getObject(getObjectRequest));
+		
+		// Set the response headers
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + media.getFileName());
+        
+        // Return the file
+		return ResponseEntity.ok()
+	            .headers(headers)
+	            .contentLength(fileBytes.length)
+	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	            .body(fileBytes);
 
 	}
 	
