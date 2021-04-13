@@ -55,15 +55,8 @@ e.preventDefault()
 console.log(this.state)
 };
   handleClick() {
-    //this.state.medias[0].update({ "fileExtension": "basu" });
     this.state.medias[5].delete();
     let newMedias = this.state.medias;
-    //newMedias[0] = newMedias[0].refresh();
-    /*
-    this.setState({
-      medias: newMedias
-    });
-    */
     newMedias[0].refresh()
     
   }
