@@ -361,9 +361,22 @@ public class MediaController {
 	@DeleteMapping("/media/{id}")
 	ResponseEntity<?> deleteMedia(@PathVariable String id) {
 
-	  repository.deleteById(id);
-
-	  return ResponseEntity.noContent().build();
+		// Get the requested media metadata
+		Media media = repository.findById(id)
+				.orElseThrow(() -> new MediaNotFoundException(id));
+		
+		// Delete the file from the S3 bucket
+		DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+		        .bucket(s3Bucket)
+		        .key(id + "/" + media.getFileName())
+		        .build();
+		s3.deleteObject(deleteObjectRequest);
+		
+		// Delete the file from the database
+		repository.deleteById(id);
+		
+		// If successful then return an empty response
+		return ResponseEntity.noContent().build();
 	}
 	
 	/*
