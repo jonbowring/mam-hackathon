@@ -28,38 +28,20 @@ class App extends React.Component {
       console.log(this.state.medias);
     });
   }
-  onFileChangeHandler = (e) => {
-    e.preventDefault();
-    this.setState({
-      selectedFile: e.target.files[0]
-  });
-  const formData = new FormData();
-  formData.append('file', this.state.selectedFile);
-    console.log(this.state);
+  
+
+
+  deleteRow(id, e){  
+    axios.delete(`http://localhost:8080/media/${id}`)  
+      .then(res => {  
+        console.log(res);  
+        console.log(res.data);  
     
-    let url = 'http://localhost:8080/media';
-   
+        const medias = this.state.medias.filter(item => item.id !== id);  
+        this.setState({ medias });  
+      })  
     
-    axios.post(url, formData, {
-     headers: {
-        'content-type': 'multipart/form-data'
-      }
-    })
-        .then(res => {
-          console.log(res.data);
-        })
-        .catch(err => console.log(err))
-  };
-submitHandler = (e) =>{
-e.preventDefault()
-console.log(this.state)
-};
-  handleClick() {
-    this.state.medias[5].delete();
-    let newMedias = this.state.medias;
-    newMedias[0].refresh()
-    
-  }
+  } 
 
   handleSubmit(event) {
     
@@ -105,25 +87,49 @@ console.log(this.state)
             <input type="file" ref={this.fileInput} multiple/>
             <button type="submit">Submit</button>
           </form>
-          <ul>
-            {
-                this.state.medias.map((media, index) => {
-                  return <li key={ media.id }>{ media.fileName }</li>;
-                })
-            }
-          </ul>
-          <button onClick={() => this.handleClick()}>Update</button>
+
+          <style>{`
+    table,th,td{
+     border:1px solid black;
+    }
+  `}</style>
+           <table className="table table-bordered">  
+            <thead>  
+              <tr>  
+                  <th>ID</th>  
+                  <th>FileName</th>  
+                  <th>FileExtension</th>  
+                  <th>FileType</th>  
+                  <th>URL</th>  
+                  <th>Action</th>  
+              </tr>  
+            </thead>  
+    
+            <tbody>  
+              {this.state.medias.map((media, index) => (  
+                <tr>  
+                  <td>{media.id}</td>  
+                  <td>{media.fileName }</td>  
+                  <td>{media.fileExtension }</td> 
+                  <td>{media.mimeType }</td> 
+                  <td>{media.url }</td> 
+                  <td>  
+                  <button onClick={(e) => this.deleteRow(media.id, e)}>Delete</button>
+                  </td>  
+                </tr>  
+              ))}  
+            </tbody>  
+    
+        </table>  
+
+   
+        
             {
                 this.state.medias.map((media, index) => {
                   return <img src={ media.url} />
                 })
             }
-        <form onSubmit={this.submitHandler}>   
-          <div>
-       <input type="file" className="form-control" name="file" onChange={this.onFileChangeHandler}/>
-       </div>
-       <button type='submit'>Submit</button>   
-       </form> 
+       
         
         </section>
         <footer className="app-footer">
