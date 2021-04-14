@@ -82,55 +82,23 @@ class App extends React.Component {
           <h1>Nav</h1>
         </nav>
         <section className="app-content">
-          <h1>Content</h1>
-          <form onSubmit={this.handleSubmit}>
-            <input type="file" ref={this.fileInput} multiple/>
-            <button type="submit">Submit</button>
-          </form>
-
-          <style>{`
-    table,th,td{
-     border:1px solid black;
-    }
-  `}</style>
-           <table className="table table-bordered">  
-            <thead>  
-              <tr>  
-                  <th>ID</th>  
-                  <th>FileName</th>  
-                  <th>FileExtension</th>  
-                  <th>FileType</th>  
-                  <th>URL</th>  
-                  <th>Action</th>  
-              </tr>  
-            </thead>  
-    
-            <tbody>  
-              {this.state.medias.map((media, index) => (  
-                <tr>  
-                  <td>{media.id}</td>  
-                  <td>{media.fileName }</td>  
-                  <td>{media.fileExtension }</td> 
-                  <td>{media.mimeType }</td> 
-                  <td>{media.url }</td> 
-                  <td>  
-                  <button onClick={(e) => this.deleteRow(media.id, e)}>Delete</button>
-                  </td>  
-                </tr>  
-              ))}  
-            </tbody>  
-    
-        </table>  
-
-   
-        
-            {
-                this.state.medias.map((media, index) => {
-                  return <img src={ media.url} />
-                })
-            }
-       
-        
+          <div className="app-content-menu">
+            <h1>Media</h1>
+            <form onSubmit={this.handleSubmit}>
+              <input type="file" ref={this.fileInput} multiple/>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+          <div className="app-content-outer">
+            <div className="app-content-inner">
+              {
+                  this.state.medias.map((media, index) => {
+                    return <img src={ media.url} className="grid-image" />
+                  })
+              }
+            </div>
+          </div>
+          
         </section>
         <footer className="app-footer">
           <h1>Footer</h1>
