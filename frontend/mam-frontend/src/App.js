@@ -3,7 +3,6 @@ import axios from 'axios';
 import './App.css';
 import { MediaModel } from './MediaModel';
 
-
 class App extends React.Component {
   
   constructor(props) {
@@ -12,9 +11,9 @@ class App extends React.Component {
     this.fileInput = React.createRef();
     this.state = {
       medias: []
+      
     }
   }
-
   componentDidMount() {
     axios({
       method: 'get',
@@ -29,19 +28,20 @@ class App extends React.Component {
       console.log(this.state.medias);
     });
   }
+  
 
-  handleClick() {
-    //this.state.medias[0].update({ "fileExtension": "basu" });
-    //this.state.medias[0].delete();
-    let newMedias = this.state.medias;
-    //newMedias[0] = newMedias[0].refresh();
-    /*
-    this.setState({
-      medias: newMedias
-    });
-    */
-    newMedias[0].refresh()
-  }
+
+  deleteRow(id, e){  
+    axios.delete(`http://localhost:8080/media/${id}`)  
+      .then(res => {  
+        console.log(res);  
+        console.log(res.data);  
+    
+        const medias = this.state.medias.filter(item => item.id !== id);  
+        this.setState({ medias });  
+      })  
+    
+  } 
 
   handleSubmit(event) {
     
@@ -87,19 +87,50 @@ class App extends React.Component {
             <input type="file" ref={this.fileInput} multiple/>
             <button type="submit">Submit</button>
           </form>
-          <ul>
-            {
-                this.state.medias.map((media, index) => {
-                  return <li key={ media.id }>{ media.fileName }</li>;
-                })
-            }
-          </ul>
-          <button onClick={() => this.handleClick()}>Update</button>
+
+          <style>{`
+    table,th,td{
+     border:1px solid black;
+    }
+  `}</style>
+           <table className="table table-bordered">  
+            <thead>  
+              <tr>  
+                  <th>ID</th>  
+                  <th>FileName</th>  
+                  <th>FileExtension</th>  
+                  <th>FileType</th>  
+                  <th>URL</th>  
+                  <th>Action</th>  
+              </tr>  
+            </thead>  
+    
+            <tbody>  
+              {this.state.medias.map((media, index) => (  
+                <tr>  
+                  <td>{media.id}</td>  
+                  <td>{media.fileName }</td>  
+                  <td>{media.fileExtension }</td> 
+                  <td>{media.mimeType }</td> 
+                  <td>{media.url }</td> 
+                  <td>  
+                  <button onClick={(e) => this.deleteRow(media.id, e)}>Delete</button>
+                  </td>  
+                </tr>  
+              ))}  
+            </tbody>  
+    
+        </table>  
+
+   
+        
             {
                 this.state.medias.map((media, index) => {
                   return <img src={ media.url} />
                 })
             }
+       
+        
         </section>
         <footer className="app-footer">
           <h1>Footer</h1>
@@ -108,12 +139,9 @@ class App extends React.Component {
           <h1>Aside</h1>
         </aside>
       </div>
-
     ); // End return
-
   } // End render()
   
 } // End class App
-
 export default App;
 //TODO delete this line
