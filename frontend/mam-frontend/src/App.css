@@ -99,8 +99,8 @@ select {
   align-items: stretch;
   justify-content: stretch;
   align-content: stretch;
-  grid-template-columns: 10vw 70vw 20vw;
-  grid-template-rows: 7vh 1fr 10vh;
+  grid-template-columns: 15vw 1fr 20vw;
+  grid-template-rows: 10vh 1fr 10vh;
   overflow: hidden;
 }
 
@@ -149,11 +149,6 @@ select {
   flex-wrap: wrap;
   justify-content: space-evenly;
   align-items: center;
-}
-
-.app-aside {
-  grid-column: 3 / span 1;
-  grid-row: 2 / span 2;
 }
 
 .app-footer {
@@ -229,17 +224,74 @@ p, span, ul, ol, td {
   z-index: 2;
 }
 
-.app-aside {
+.app-aside-hidden, .app-aside-visible {
   background: #414042;
   color: #fff;
-  display: none;
-  top: 5vh;
-  right: 0;
+  position: fixed;
+  padding: 1rem;
+  width: 40vw;
+  height: 100vh;
+  top: 0;
   z-index: 3;
+  transition: right 0.5s ease-in-out 0s;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.app-aside-hidden {
+  right: -40vw;
+}
+
+.app-aside-visible {
+  right: 0vw;
+}
+
+.closeButton {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 2rem;
+  cursor: pointer;
+}
+
+.popForm div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.popLabel {
+  width: 10vw;
+}
+
+.popInput {
+  width: 25vw;
+  background: #414042;
+  color: #fff;
+  border: none;
+}
+
+.popInput:hover {
+  background: #00ff66;
+  color: #000;
+}
+
+.popInput:focus {
+  background: #fff;
+  color: #000;
 }
 
 .grid-image {
-  width: 15vw;
+  height: 30vh;
   box-shadow: 2px 2px 2px #9c9c9c;
   margin-top: 0.5rem;
+}
+
+.infaLogo {
+  height: 6vh;
 }
