@@ -3,6 +3,9 @@ import axios from 'axios';
 import './App.css';
 import InfaLogo from './infa-logo.svg';
 import { MediaModel } from './MediaModel';
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 class App extends React.Component {
   
@@ -30,6 +33,7 @@ class App extends React.Component {
       this.setState( {medias: newMedias });
     });
   }
+ 
   
   closePopout() {
     this.setState({ 
@@ -66,15 +70,17 @@ class App extends React.Component {
     }
 
   }
-  
+
 
   deleteRow(id, e){  
     axios.delete(`http://localhost:8080/media/${id}`)  
       .then(res => {  
         console.log(res);  
         console.log(res.data);  
+        NotificationManager.success('Media Deleted!','',500);
     
         const medias = this.state.medias.filter(item => item.id !== id);  
+        
         this.setState({ medias });  
       })  
     
@@ -100,10 +106,18 @@ class App extends React.Component {
     });
     
     // Send the files to the backend
-    axios.post(url, formData,config)
+    axios.post(url, formData,config).then(response=>{console.log(response.data);
+      window.location.reload();})
     .catch(function (error) {
       console.log(error);
+      NotificationManager.success( 'File Upload Failed!');
     });
+    NotificationManager.success( 'File Upload was Successful!');
+   
+ 
+    
+   
+   
     
   }
   
@@ -172,7 +186,13 @@ class App extends React.Component {
               <input className="popInput" type="text" id="popURL" name="popURL" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }/>
             </div>
           </form>
+          <div>
+            <button className="deleteMedia" onClick={(e) => this.deleteRow(this.state.selectedMedia.id, e)}>Delete</button>
+          </div>
+          
         </aside>
+        
+        <NotificationContainer />
       </div>
     ); // End return
   } // End render()

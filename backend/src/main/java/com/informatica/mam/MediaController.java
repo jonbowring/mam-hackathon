@@ -1,6 +1,8 @@
 package com.informatica.mam;
 
 import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -8,6 +10,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.imageio.ImageIO;
+
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -77,7 +82,6 @@ import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
 import software.amazon.awssdk.services.s3.waiters.S3Waiter;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
-import software.amazon.awssdk.services.s3.model.HeadBucketResponse;
 
 
 /*
@@ -102,8 +106,8 @@ public class MediaController {
 	
 
 	@Value("${cloud.aws.bucket.name}")
-	private String s3Bucket;
-	//private String s3Bucket="jbowring-mam-hackathon";
+	//private String s3Bucket;
+	private String s3Bucket="jbowring-mam-hackathon";
 	//@Value("${cloud.aws.access-key}")
 	//private String s3AccessKey;
 	//@Value("${cloud.aws.secret-key}")
@@ -279,9 +283,12 @@ public class MediaController {
 				InputStreamReader   isr = new InputStreamReader(fs);
 				 fileEncoding=isr.getEncoding();
 			}
+			BufferedImage bImg=ImageIO.read(multiFile.getInputStream());
+			int width=bImg.getWidth();
+			int height = bImg.getHeight();
 			
 			// Instantiate a new Media object
-			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding)));
+			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height)));
 					
 			String s3FileName=	entityModel.getContent().getId() +"/"+multiFile.getOriginalFilename();
 			// Upload the file to S3
@@ -295,16 +302,18 @@ public class MediaController {
 			String url = s3.utilities().getUrl(builder -> builder.bucket(s3Bucket).key(s3FileName)).toExternalForm();
 			//entityModel.getContent().setUrl(url);
 			//Optional<Media> urlMedia = repository.findById(entityModel.getContent().getId());
-			Media urlMedia = repository.findById(entityModel.getContent().getId())
-					.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
-			urlMedia.setUrl(url);
-			repository.save(urlMedia);
 			
+		Media urlMedia = repository.findById(entityModel.getContent().getId())
+				.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
+		urlMedia.setUrl(url);
+		repository.save(urlMedia);
+		
+		EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId()));
 			// Delete the temp file
 			newFile.delete();
 			
 			// Add the new file to the list
-			medias.add(entityModel);
+			medias.add(entityModel1);
 			
 		}
 		
