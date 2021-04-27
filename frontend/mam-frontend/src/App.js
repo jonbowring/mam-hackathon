@@ -71,6 +71,8 @@ class App extends React.Component {
 
   }
 
+ 
+
 
   deleteRow(id, e){  
     axios.delete(`http://localhost:8080/media/${id}`)  
@@ -186,13 +188,16 @@ class App extends React.Component {
               <input className="popInput" type="text" id="popURL" name="popURL" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }/>
             </div>
           </form>
-          <div>
+          <div id='div1'>
             <button className="deleteMedia" onClick={(e) => this.deleteRow(this.state.selectedMedia.id, e)}>Delete</button>
+          </div>
+          <div id='div2'>
+          <a href={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' } download>Download</a>
           </div>
           
         </aside>
         
-        <NotificationContainer />
+        <NotificationContainer />s
       </div>
     ); // End return
   } // End render()
