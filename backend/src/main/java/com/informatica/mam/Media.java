@@ -23,7 +23,8 @@ class Media {
 	private Long fileSize;
 	private String fileEncoding;
 	private String url;
-	
+	private int width;
+	private int height;
 	/*
 	 * ------------------
 	 * Constructors
@@ -32,14 +33,35 @@ class Media {
 	
 	
 	
+	
+
+	
+
 	Media() {}
 	
-	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding) {
+	
+
+	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding,int width,int height) {
 		this.fileName = fileName;
 		this.fileExtension=fileExtension;
 		this.mimeType=mimeType;
 		this.fileSize=fileSize;
 		this.fileEncoding=fileEncoding;
+		this.width=width;
+		this.height=height;
+		
+	}
+	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding,int width,int height,String url,String id) {
+		this.fileName = fileName;
+		this.fileExtension=fileExtension;
+		this.mimeType=mimeType;
+		this.fileSize=fileSize;
+		this.fileEncoding=fileEncoding;
+		this.width=width;
+		this.height=height;
+		this.url=url;
+		this.id=id;
+		
 	}
 	
 	/*
@@ -51,7 +73,9 @@ class Media {
 	public String getFileExtension() {
 		return fileExtension;
 	}
-
+	public int getWidth() {
+		return width;
+	}
 
 
 	public String getMimeType() {
@@ -61,6 +85,10 @@ class Media {
 	
 	public Long getFileSize() {
 		return fileSize;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 
@@ -117,6 +145,15 @@ class Media {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+	public void setWidth(int width) {
+		this.width = width;
+	}
+	
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
 	/*
 	 * ------------------
@@ -144,19 +181,21 @@ class Media {
 		// Check if the object properties match and then return the result
 		return Objects.equals(this.id, media.id) &&
 				Objects.equals(this.fileName, media.fileName) && Objects.equals(this.fileSize, media.fileSize) && Objects.equals(this.fileExtension, media.fileExtension)
-				&& Objects.equals(this.mimeType, media.mimeType)&& Objects.equals(this.fileEncoding, media.fileEncoding);
+				&& Objects.equals(this.mimeType, media.mimeType)&& Objects.equals(this.fileEncoding, media.fileEncoding)&& Objects.equals(this.width, media.width)&& Objects.equals(this.height, media.height)
+				;
 	}
 	
 	// This function generates a hash code for the current instance
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.id, this.fileName,this.fileExtension,this.fileSize,this.mimeType,this.fileEncoding);
+		return Objects.hash(this.id, this.fileName,this.fileExtension,this.fileSize,this.mimeType,this.fileEncoding,this.width,this.height);
 	}
 	
 	// This function returns a string representation of the current instance
 	@Override
 	public String toString() {
-		return "Media {" + "id=" + this.id + ", fileName='" + this.fileName + "'" + ", fileSize=" + this.fileSize + ", fileExtension='"+ this.fileExtension+"'" +", fileEncoding='"+ this.fileEncoding+"'}";
+		return "Media {" + "id=" + this.id + ", fileName='" + this.fileName + "'" + ", fileSize=" + this.fileSize + ", fileExtension='"
+	+ this.fileExtension+"'" +", fileEncoding='"+ this.fileEncoding+", width='"+ this.width+", height='"+ this.height+"'}";
 	}
 
 	
