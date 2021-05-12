@@ -25,6 +25,7 @@ class Media {
 	private String url;
 	private int width;
 	private int height;
+	private String hierarchyCode;
 	/*
 	 * ------------------
 	 * Constructors
@@ -41,7 +42,7 @@ class Media {
 	
 	
 
-	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding,int width,int height) {
+	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding,int width,int height,String hierarchyCode) {
 		this.fileName = fileName;
 		this.fileExtension=fileExtension;
 		this.mimeType=mimeType;
@@ -49,9 +50,11 @@ class Media {
 		this.fileEncoding=fileEncoding;
 		this.width=width;
 		this.height=height;
+		this.hierarchyCode=hierarchyCode;
+		
 		
 	}
-	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding,int width,int height,String url,String id) {
+	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding,int width,int height,String url,String id,String hierarchyCode) {
 		this.fileName = fileName;
 		this.fileExtension=fileExtension;
 		this.mimeType=mimeType;
@@ -61,8 +64,11 @@ class Media {
 		this.height=height;
 		this.url=url;
 		this.id=id;
+		this.hierarchyCode=hierarchyCode;
 		
 	}
+	
+	
 	
 	/*
 	 * ------------------
@@ -70,6 +76,14 @@ class Media {
 	 * ------------------
 	 */
 	
+	public String getHierarchyCode() {
+		return hierarchyCode;
+	}
+
+
+
+
+
 	public String getFileExtension() {
 		return fileExtension;
 	}
@@ -155,6 +169,11 @@ class Media {
 		this.height = height;
 	}
 
+	public void setHierarchyCode(String hierarchyCode) {
+		this.hierarchyCode = hierarchyCode;
+	}
+
+
 	/*
 	 * ------------------
 	 * Other Methods
@@ -182,13 +201,13 @@ class Media {
 		return Objects.equals(this.id, media.id) &&
 				Objects.equals(this.fileName, media.fileName) && Objects.equals(this.fileSize, media.fileSize) && Objects.equals(this.fileExtension, media.fileExtension)
 				&& Objects.equals(this.mimeType, media.mimeType)&& Objects.equals(this.fileEncoding, media.fileEncoding)&& Objects.equals(this.width, media.width)&& Objects.equals(this.height, media.height)
-				;
+				&& Objects.equals(this.hierarchyCode, media.hierarchyCode);
 	}
 	
 	// This function generates a hash code for the current instance
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.id, this.fileName,this.fileExtension,this.fileSize,this.mimeType,this.fileEncoding,this.width,this.height);
+		return Objects.hash(this.id, this.fileName,this.fileExtension,this.fileSize,this.mimeType,this.fileEncoding,this.width,this.height,this.hierarchyCode);
 	}
 	
 	// This function returns a string representation of the current instance
