@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -286,9 +287,10 @@ public class MediaController {
 			BufferedImage bImg=ImageIO.read(multiFile.getInputStream());
 			int width=bImg.getWidth();
 			int height = bImg.getHeight();
+			String hierarchyCode="";
 			
 			// Instantiate a new Media object
-			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height)));
+			EntityModel<Media> entityModel = assembler.toModel(repository.save(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,hierarchyCode)));
 					
 			String s3FileName=	entityModel.getContent().getId() +"/"+multiFile.getOriginalFilename();
 			// Upload the file to S3
@@ -308,7 +310,9 @@ public class MediaController {
 		urlMedia.setUrl(url);
 		repository.save(urlMedia);
 		
-		EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId()));
+	 
+		
+		EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId(),hierarchyCode));
 			// Delete the temp file
 			newFile.delete();
 			
@@ -346,6 +350,7 @@ public class MediaController {
 					if(null!=newMedia.getMimeType())
 					media.setMimeType(newMedia.getMimeType());
 					return repository.save(media);
+					
 				})
 				.orElseGet(() -> {
 					newMedia.setId(id);
@@ -359,6 +364,9 @@ public class MediaController {
 				.body(entityModel);
 		
 	}
+	
+	
+	
 	
 	/*
 	 * ------------------
