@@ -365,7 +365,24 @@ public class MediaController {
 		
 	}
 	
-	
+	@PutMapping("/media/hierarchy/{id}")
+	Media replaceConfig(@RequestBody Media newMediaHierarchyUpdate, @PathVariable String id) {
+		
+		Media updatedConfig = repository.findById(id)
+				.map(media -> {
+					if(newMediaHierarchyUpdate.getHierarchyCode()!=null) {
+						media.setHierarchyCode(newMediaHierarchyUpdate.getHierarchyCode());
+					}
+					
+					return repository.save(media);
+				})
+				.orElseGet(() -> {
+					newMediaHierarchyUpdate.setId(id);
+					return repository.save(newMediaHierarchyUpdate);
+				});
+		return updatedConfig;
+		
+	}
 	
 	
 	/*
