@@ -1,8 +1,0 @@
-FROM openjdk:17-jdk-alpine
-ENV AWS_SECRET_ACCESS_KEY=Cj+eJmJ/gPjsF2H5OXnFkJPOhvd5ziKKhSJlboXt
-ENV AWS_ACCESS_KEY_ID=AKIA2K5F7X35VEX2BR23
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
-
-
