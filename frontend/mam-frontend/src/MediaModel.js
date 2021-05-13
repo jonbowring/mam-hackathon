@@ -9,7 +9,8 @@ export class MediaModel {
         this.mimeType = data.mimeType;
         this.fileSize = data.fileSize;
         this.fileEncoding = data.fileEncoding;
-        this.url = data.url
+        this.url = data.url;
+		this.hierarchyCode=data.hierarchyCode;
 	}
 
 	refresh() {
