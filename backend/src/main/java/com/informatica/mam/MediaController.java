@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import java.util.function.Function;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.CollectionModel;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -103,6 +106,9 @@ public class MediaController {
 	private Region s3Region;
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
+	
+	@Autowired
+	private ConfigRepository configRepo;
 
 	
 
@@ -264,6 +270,9 @@ public class MediaController {
 	@PostMapping("/media")
 	CollectionModel<EntityModel<Media>> newMedia(@RequestParam("files") MultipartFile[] multiFiles, RedirectAttributes redirectAttributes) throws S3Exception, AwsServiceException, SdkClientException, IOException {
 		
+		// Read the derivative config if existing
+		Optional<Config> config = configRepo.findById("derivatives");
+		
 		// Instantiate the medias list
 		List<EntityModel<Media>> medias = new ArrayList<>();
 
@@ -305,19 +314,38 @@ public class MediaController {
 			//entityModel.getContent().setUrl(url);
 			//Optional<Media> urlMedia = repository.findById(entityModel.getContent().getId());
 			
-		Media urlMedia = repository.findById(entityModel.getContent().getId())
-				.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
-		urlMedia.setUrl(url);
-		repository.save(urlMedia);
-		
-	 
-		
-		EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId(),hierarchyCode));
+			Media urlMedia = repository.findById(entityModel.getContent().getId())
+					.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
+			urlMedia.setUrl(url);
+			repository.save(urlMedia);
+			
+			EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId(),hierarchyCode));
 			// Delete the temp file
 			newFile.delete();
 			
 			// Add the new file to the list
 			medias.add(entityModel1);
+			
+			// If derivatives are configured then generate the derivative files and save them
+			if(config != null) {
+				
+				HashMap<String, String> properties = config.get().getProperties();
+				
+				// Loop through each of the derivatives
+				properties.forEach((key, value) -> {
+					
+					// Split out the derivative settings
+					String[] values = value.split(":");
+					String postfix = values[0];
+					int imgWidth = Integer.parseInt(values[1]);
+					int imgHeight = Integer.parseInt(values[2]);
+					//TODO
+					RestTemplate rest = new RestTemplate();
+					String base64Img = rest.postForObject(null, objectRequest, null)
+				});
+				
+				System.out.println(config.get().getProperty("web"));
+			}
 			
 		}
 		
