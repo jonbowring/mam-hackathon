@@ -86,7 +86,22 @@ class App extends React.Component {
         this.setState({ medias });  
       })  
     
-  } 
+  }
+  
+  handleAttrChange(id, event) {
+    
+    axios({
+			method: 'put',
+			url: `http://localhost:8080/media/${id}`,
+			data: {
+        [event.target.id]: event.target.value
+      }
+		})
+		.then((response) => {
+			console.log(response)
+		});
+    
+  }
 
   handleSubmit(event) {
     
@@ -115,12 +130,7 @@ class App extends React.Component {
       NotificationManager.success( 'File Upload Failed!');
     });
     NotificationManager.success( 'File Upload was Successful!');
-   
- 
-    
-   
-   
-    
+
   }
   
   render() {
@@ -161,31 +171,31 @@ class App extends React.Component {
           <form className="popForm">
             <div>
               <label className="popLabel">ID:</label>
-              <input className="popInput" type="text" id="popId" name="popId" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.id : '' }/>
+              <label>{ this.state.selectedMedia != null ? this.state.selectedMedia.id : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Name:</label>
-              <input className="popInput" type="text" id="popFilename" name="popFilename" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileName : '' }/>
+              <label>{ this.state.selectedMedia != null ? this.state.selectedMedia.fileName : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Extension:</label>
-              <input className="popInput" type="text" id="popFileExtension" name="popFileExtension" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileExtension : '' }/>
+              <label>{ this.state.selectedMedia != null ? this.state.selectedMedia.fileExtension : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Encoding:</label>
-              <input className="popInput" type="text" id="popFileEncoding" name="popFileEncoding" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileEncoding : '' }/>
+              <input className="popInput" type="text" id="fileEncoding" name="popFileEncoding" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileEncoding : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">File Size:</label>
-              <input className="popInput" type="text" id="popFileSize" name="popFileSize" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileSize : '' }/>
+              <input className="popInput" type="text" id="fileSize" name="popFileSize" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileSize : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">Mime Type:</label>
-              <input className="popInput" type="text" id="popMimeType" name="popMimeType" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.mimeType : '' }/>
+              <input className="popInput" type="text" id="mimeType" name="popMimeType" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.mimeType : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">URL:</label>
-              <input className="popInput" type="text" id="popURL" name="popURL" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }/>
+              <label>{ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }</label>
             </div>
           </form>
           <div id='div1'>
