@@ -197,6 +197,10 @@ class App extends React.Component {
               <label className="popLabel">URL:</label>
               <label>{ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }</label>
             </div>
+            <div>
+              <label className="popLabel">Hierarchy Code:</label>
+              <input className="popInput" type="text" id="hierarchyCode" name="popHierarchyCode" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.hierarchyCode : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
+            </div>
           </form>
           <div id='div1'>
             <button className="deleteMedia" onClick={(e) => this.deleteRow(this.state.selectedMedia.id, e)}>Delete</button>

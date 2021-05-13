@@ -11,6 +11,7 @@ export class MediaModel {
         this.fileEncoding = data.fileEncoding;
         this.url = data.url;
 		this.hierarchyCode=data.hierarchyCode;
+		
 	}
 
 	refresh() {
