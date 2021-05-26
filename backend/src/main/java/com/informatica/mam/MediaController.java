@@ -1,6 +1,8 @@
 package com.informatica.mam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.util.Collections;
@@ -26,8 +28,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,11 +43,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sun.xml.messaging.saaj.util.ByteInputStream;
+
+import net.minidev.json.JSONObject;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -55,6 +63,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
@@ -339,12 +350,93 @@ public class MediaController {
 					String postfix = values[0];
 					int imgWidth = Integer.parseInt(values[1]);
 					int imgHeight = Integer.parseInt(values[2]);
-					//TODO
+					
+					// Initialise the generate derivative request and headers
 					RestTemplate rest = new RestTemplate();
-					String base64Img = rest.postForObject(null, objectRequest, null)
+					HttpHeaders headers = new HttpHeaders();
+					headers.setContentType(MediaType.APPLICATION_JSON);
+					headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+					
+					// Initialise the JSON body
+					JSONObject jsonRequest = new JSONObject();
+					jsonRequest.put("url", url);
+					
+					// If width is provided then add it to the request
+					if(imgWidth > 0) {
+						jsonRequest.put("width", imgWidth);
+					}
+					
+					// If height is provided then add it to the request
+					if(imgHeight > 0) {
+						jsonRequest.put("height", imgHeight);
+					}
+					
+					// Send the request
+					HttpEntity<String> request = new HttpEntity<String>(jsonRequest.toString(), headers);
+					ResponseEntity<byte[]> response = rest.exchange(
+							"http://localhost:3374/image/resize",
+				            HttpMethod.POST, request, byte[].class, "1");
+
+				    if (response.getStatusCode() == HttpStatus.OK) {
+				        /*
+				    	try {
+							Files.write(Paths.get(uuid.toString() + "." + postfix + ".tmp"), response.getBody());
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						*/
+				    	// Create a file from the base64 bytes
+						File newDerivativeFile = new File(uuid.toString() + "." + postfix + ".tmp");
+						try (OutputStream os = new FileOutputStream(newDerivativeFile)) {
+							System.out.println("Writing to file: " + uuid.toString() + "." + postfix + ".tmp");
+							os.write(response.getBody());
+							
+							InputStream fs = new FileInputStream(newDerivativeFile);
+							InputStreamReader isr = new InputStreamReader(fs);
+							fileEncoding=isr.getEncoding();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						
+						String s3DerivativeName = s3FileName + "." + postfix;
+						// Upload the file to S3
+						PutObjectRequest derivativeRequest = PutObjectRequest.builder()
+								.bucket(s3Bucket)
+								.key(s3DerivativeName)
+								.build();
+						PutObjectResponse s3DerivativeResponse = s3.putObject(derivativeRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newDerivativeFile));
+						
+						// Get the public URL and save it to the database
+						String derivativeUrl = s3.utilities().getUrl(builder -> builder.bucket(s3Bucket).key(s3DerivativeName)).toExternalForm();
+						System.out.println(derivativeUrl);
+						
+				    }
+					/*
+					String base64Img = rest.postForObject("http://localhost:3374/image/resize", request, String.class);
+					System.out.println("\n\n\n\n\n");
+					System.out.println(base64Img);
+					byte[] base64Bytes = Base64.getDecoder().decode(base64Img.getBytes(StandardCharsets.UTF_8));
+					*/
+					//byte[] base64Bytes = null;
+					/*
+					try {
+						base64Bytes = IOUtils.toByteArray(rest.postForObject("http://localhost:3374/image/resize", request, String.class));
+					} catch (RestClientException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					*/
+					
+					
+					
 				});
 				
-				System.out.println(config.get().getProperty("web"));
 			}
 			
 		}
