@@ -305,8 +305,9 @@ public class MediaController {
 				 fileEncoding=isr.getEncoding();
 			}
 			BufferedImage bImg=ImageIO.read(multiFile.getInputStream());
-			int width=bImg.getWidth();
-			int height = bImg.getHeight();
+			String contentType = multiFile.getContentType();
+			int width = contentType.substring(0,5).equals("image") ? bImg.getWidth() : -1;
+			int height = contentType.substring(0,5).equals("image") ? bImg.getHeight() : -1;
 			String hierarchyCode="";
 			
 			// Instantiate a new Media object
@@ -337,8 +338,8 @@ public class MediaController {
 			// Add the new file to the list
 			medias.add(entityModel1);
 			
-			// If derivatives are configured then generate the derivative files and save them
-			if(config != null) {
+			// If derivatives are configured and the file type is an image then generate the derivative files and save them
+			if(config != null && contentType.substring(0,5).equals("image")) {
 				
 				HashMap<String, String> properties = config.get().getProperties();
 				
