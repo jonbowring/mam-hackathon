@@ -12,6 +12,7 @@ import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 
 
 
+
 class App extends React.Component {
   
   constructor(props) {
@@ -264,16 +265,15 @@ class App extends React.Component {
             <h1>Media</h1>
             <br/><br/>
             <form onSubmit={this.handleSubmit}>
-            <Button onClick={() => this.fileInput.click()}>
+            <Button onClick={() => this.fileInput.current && this.fileInput.current.click()} >
             <PhotoLibraryIcon/>
             </Button>
-            <input type="file"ref={(fileInput) => {
-                    this.fileInput = fileInput;
-                  }} multiple style={{ display: 'none'}}  />
+            <input type="file" ref={this.fileInput} multiple style={{ display: 'none'}}   />
             
            
             <Button variant="contained" type="submit">Submit</Button>
             </form>
+            
             </center>
           </div>
           <div className="app-content-outer">
@@ -297,9 +297,7 @@ class App extends React.Component {
               
               <img className="popImage"  src={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }/>
               <div id='div1'>
-            <Button className="deleteMedia" variant="contained"  onClick={(e) => this.deleteRow(this.state.selectedMedia.id, e)}>Delete</Button>
-
-
+            <Button className="deleteMedia" variant="contained"  onClick={() => this.deleteRow(this.state.selectedMedia.id)}>Delete</Button>
           </div>
           <div id='div2'>
           <Button className="downloadMedia" variant="contained"   href={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' } download>Download</Button>
