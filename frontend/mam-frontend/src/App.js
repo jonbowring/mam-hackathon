@@ -46,8 +46,8 @@ class App extends React.Component {
     })
     .then((response) => {
       let newMedias = this.state.medias;
-      response.data._embedded.medias.map((data, i) => {
-        return newMedias.push(new MediaModel(data));
+      response.data._embedded.medias.forEach((data, i) => {
+        newMedias.push(new MediaModel(data));
       });
       this.setState( {medias: newMedias });
       this.setState( {allmedias: newMedias });
@@ -63,8 +63,8 @@ class App extends React.Component {
       this.setState(state=>({
         medias:[]}));
       let newMedias = this.state.medias;
-      response.data._embedded.medias.map((data, i) => {
-        return newMedias.push(new MediaModel(data));
+      response.data._embedded.medias.forEach((data, i) => {
+        newMedias.push(new MediaModel(data));
       });
       this.setState( {medias: newMedias });
     });
@@ -141,15 +141,15 @@ class App extends React.Component {
       })
       .then((response) => {
       let newHierarchy = this.state.hierarchies;
-        response.data._embedded.mediaHierarchies.map((data, i) => {
+        response.data._embedded.mediaHierarchies.forEach((data, i) => {
           console.log('hierarchy name -'+data.hierarchyName);
           this.setState({
           hierarchyName:this.state.hierarchyName.concat(data.hierarchyName)
-        })
+        });
         
         this.setState({
           data:response.data._embedded.mediaHierarchies
-        })
+        });
           
           
         //  return newHierarchy.push(new HierarchyModel(data));
@@ -227,9 +227,11 @@ class App extends React.Component {
       this.setState(state=>({
         medias:[]}));
       let newMedias = this.state.medias;
-      response.data._embedded.medias.map((data, i) => {
-        if(data.hierarchyCode===hierarchyCode)
-        return newMedias.push(new MediaModel(data));
+      response.data._embedded.medias.forEach((data, i) => {
+        if(data.hierarchyCode===hierarchyCode) {
+          newMedias.push(new MediaModel(data));
+        }
+        
       });
       this.setState( {medias: newMedias });
     });
@@ -241,7 +243,7 @@ class App extends React.Component {
         
         result = this.state.allmedias.filter((data) => {
             
-        return data.fileName.toLowerCase().search(value) != -1 || data.id.search(value) != -1;
+        return data.fileName.toLowerCase().search(value) !== -1 || data.id.search(value) !== -1;
         });
         this.setState(state=>({
           medias:[]}));
@@ -249,7 +251,7 @@ class App extends React.Component {
           console.log(result);
   }
   render() {
-    const hierarchyCode=this.state.hierarchyCode;
+    //const hierarchyCode=this.state.hierarchyCode;
     return (
      
      <div className="App">
@@ -295,45 +297,45 @@ class App extends React.Component {
           <form className="popForm">
           <div>
               
-              <img className="popImage"  src={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }/>
+              <img className="popImage" src={ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' } alt={ this.state.selectedMedia !== null ? this.state.selectedMedia.fileName : '' }/>
               <div id='div1'>
             <Button className="deleteMedia" variant="contained"  onClick={() => this.deleteRow(this.state.selectedMedia.id)}>Delete</Button>
           </div>
           <div id='div2'>
-          <Button className="downloadMedia" variant="contained"   href={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' } download>Download</Button>
+          <Button className="downloadMedia" variant="contained"   href={ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' } download>Download</Button>
           </div>
             </div>
             <div>
               <label className="popLabel">ID:</label>
-              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.id : '' }</label>
+              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.id : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Name:</label>
-              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.fileName : '' }</label>
+              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.fileName : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Extension:</label>
-              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.fileExtension : '' }</label>
+              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.fileExtension : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Encoding:</label>
-              <input className="popInput" type="text" id="fileEncoding" name="popFileEncoding" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileEncoding : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
+              <input className="popInput" type="text" id="fileEncoding" name="popFileEncoding" defaultValue={ this.state.selectedMedia !== null ? this.state.selectedMedia.fileEncoding : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">File Size:</label>
-              <input className="popInput" type="text" id="fileSize" name="popFileSize" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileSize : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
+              <input className="popInput" type="text" id="fileSize" name="popFileSize" defaultValue={ this.state.selectedMedia !== null ? this.state.selectedMedia.fileSize : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">Mime Type:</label>
-              <input className="popInput" type="text" id="mimeType" name="popMimeType" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.mimeType : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
+              <input className="popInput" type="text" id="mimeType" name="popMimeType" defaultValue={ this.state.selectedMedia !== null ? this.state.selectedMedia.mimeType : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">URL:</label>
-              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }</label>
+              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' }</label>
             </div>
             <div>
-              <label for="hierarchy" className="popLabel">Hierarchy Code:</label>
-              <input className="popInput" type="text" id="hierarchyCode" name="popHierarchyCode" list="hierarchyList" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.hierarchyCode : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
+              <label htmlFor="hierarchy" className="popLabel">Hierarchy Code:</label>
+              <input className="popInput" type="text" id="hierarchyCode" name="popHierarchyCode" list="hierarchyList" defaultValue={ this.state.selectedMedia !== null ? this.state.selectedMedia.hierarchyCode : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
              
               <datalist id="hierarchyList">
                        <option value="1234-1">Product Images</option>
