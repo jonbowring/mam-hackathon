@@ -126,11 +126,9 @@ public class MediaController {
 	@Value("${cloud.aws.bucket.name}")
 	//private String s3Bucket;
 	private String s3Bucket="jbowring-mam-hackathon";
-	//@Value("${cloud.aws.access-key}")
-	//private String s3AccessKey;
-	//@Value("${cloud.aws.secret-key}")
-	//private String s3SecretKey;
 	private	String fileEncoding;
+	@Value("${derivative.resize.url}")
+	private String derivativeResizeUrl;
 	
 
 	/*
@@ -144,7 +142,6 @@ public class MediaController {
 		this.assembler = assembler;
 		// Configure the AWS S3 client
 		this.s3Region = Region.AP_SOUTHEAST_2;
-		//this.s3Region = Region.of(s3RegionName);
 		this.s3 = S3Client.builder().region(this.s3Region).build();
 	}
 	
@@ -302,7 +299,11 @@ public class MediaController {
 				
 				InputStream fs = new FileInputStream(newFile);
 				InputStreamReader   isr = new InputStreamReader(fs);
-				 fileEncoding=isr.getEncoding();
+				fileEncoding=isr.getEncoding();
+				 
+				// Close the file streams
+				os.close();
+				fs.close();
 			}
 			BufferedImage bImg=ImageIO.read(multiFile.getInputStream());
 			String contentType = multiFile.getContentType();
@@ -319,19 +320,19 @@ public class MediaController {
 					.bucket(s3Bucket)
 					.key(s3FileName)
 					.build();
-			PutObjectResponse s3Response = s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
+			s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
 			
 			// Get the public URL and save it to the database
 			String url = s3.utilities().getUrl(builder -> builder.bucket(s3Bucket).key(s3FileName)).toExternalForm();
-			//entityModel.getContent().setUrl(url);
-			//Optional<Media> urlMedia = repository.findById(entityModel.getContent().getId());
 			
+			// Save the url to the database
 			Media urlMedia = repository.findById(entityModel.getContent().getId())
 					.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
 			urlMedia.setUrl(url);
 			repository.save(urlMedia);
 			
 			EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId(),hierarchyCode));
+			
 			// Delete the temp file
 			newFile.delete();
 			
@@ -375,72 +376,59 @@ public class MediaController {
 					// Send the request
 					HttpEntity<String> request = new HttpEntity<String>(jsonRequest.toString(), headers);
 					ResponseEntity<byte[]> response = rest.exchange(
-							"http://localhost:3374/image/resize",
+							derivativeResizeUrl,
 				            HttpMethod.POST, request, byte[].class, "1");
 
 				    if (response.getStatusCode() == HttpStatus.OK) {
-				        /*
-				    	try {
-							Files.write(Paths.get(uuid.toString() + "." + postfix + ".tmp"), response.getBody());
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						*/
+				        
 				    	// Create a file from the base64 bytes
 						File newDerivativeFile = new File(uuid.toString() + "." + postfix + ".tmp");
 						try (OutputStream os = new FileOutputStream(newDerivativeFile)) {
-							System.out.println("Writing to file: " + uuid.toString() + "." + postfix + ".tmp");
+							
 							os.write(response.getBody());
 							
 							InputStream fs = new FileInputStream(newDerivativeFile);
 							InputStreamReader isr = new InputStreamReader(fs);
 							fileEncoding=isr.getEncoding();
+							
+							// Close the file streams
+							os.close();
+							fs.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						
-						
-						String s3DerivativeName = s3FileName + "." + postfix;
+						// Generate the derivative file name by incorporating the postfix
+						String[] fileNameTokens = s3FileName.split("\\.(?=[^\\.]+$)");
+						String s3DerivativeName = fileNameTokens[0] + "." + postfix + "." + fileNameTokens[1];
+								
 						// Upload the file to S3
 						PutObjectRequest derivativeRequest = PutObjectRequest.builder()
 								.bucket(s3Bucket)
 								.key(s3DerivativeName)
 								.build();
-						PutObjectResponse s3DerivativeResponse = s3.putObject(derivativeRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newDerivativeFile));
+						s3.putObject(derivativeRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newDerivativeFile));
 						
-						// Get the public URL and save it to the database
+						// Get the public URL
 						String derivativeUrl = s3.utilities().getUrl(builder -> builder.bucket(s3Bucket).key(s3DerivativeName)).toExternalForm();
-						System.out.println(derivativeUrl);
 						
-				    }
-					/*
-					String base64Img = rest.postForObject("http://localhost:3374/image/resize", request, String.class);
-					System.out.println("\n\n\n\n\n");
-					System.out.println(base64Img);
-					byte[] base64Bytes = Base64.getDecoder().decode(base64Img.getBytes(StandardCharsets.UTF_8));
-					*/
-					//byte[] base64Bytes = null;
-					/*
-					try {
-						base64Bytes = IOUtils.toByteArray(rest.postForObject("http://localhost:3374/image/resize", request, String.class));
-					} catch (RestClientException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					*/
+						// Save the derivative to the database
+						Media derivativeMedia = repository.findById(entityModel.getContent().getId())
+								.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
+						derivativeMedia.addDerivativeUrl(key, derivativeUrl);
+						repository.save(derivativeMedia);
+						
+						// Clean up the temp file
+						newDerivativeFile.delete();
+						
+						
+				    } // End if derivative response is ok
 					
-					
-					
-				});
+				}); // End for each derivative properties loop
 				
-			}
+			} // End if derivative config is not null and image type
 			
-		}
+		} // End loop through uploaded files
 		
 		return CollectionModel.of(medias, //
 				linkTo(methodOn(MediaController.class).all()).withSelfRel());

@@ -1,5 +1,6 @@
 package com.informatica.mam;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
@@ -26,6 +27,7 @@ class Media {
 	private int width;
 	private int height;
 	private String hierarchyCode;
+	private HashMap<String, String> derivatives;
 	/*
 	 * ------------------
 	 * Constructors
@@ -38,7 +40,9 @@ class Media {
 
 	
 
-	Media() {}
+	Media() {
+		this.derivatives = new HashMap<String, String>();
+	}
 	
 	
 
@@ -51,9 +55,10 @@ class Media {
 		this.width=width;
 		this.height=height;
 		this.hierarchyCode=hierarchyCode;
-		
+		this.derivatives = new HashMap<String, String>();
 		
 	}
+	
 	Media(String fileName, String fileExtension,String mimeType,Long fileSize,String fileEncoding,int width,int height,String url,String id,String hierarchyCode) {
 		this.fileName = fileName;
 		this.fileExtension=fileExtension;
@@ -65,7 +70,7 @@ class Media {
 		this.url=url;
 		this.id=id;
 		this.hierarchyCode=hierarchyCode;
-		
+		this.derivatives = new HashMap<String, String>();
 	}
 	
 	
@@ -122,6 +127,10 @@ class Media {
 	public String getUrl() {
 		return this.url;
 	}
+	
+	public HashMap<String, String> getDerivatives() {
+		return this.derivatives;
+	}
 
 	
 	/*
@@ -172,6 +181,10 @@ class Media {
 	public void setHierarchyCode(String hierarchyCode) {
 		this.hierarchyCode = hierarchyCode;
 	}
+	
+	public void setDerivatives(HashMap<String, String> derivatives) {
+		this.derivatives = derivatives;
+	}
 
 
 	/*
@@ -179,6 +192,14 @@ class Media {
 	 * Other Methods
 	 * ------------------
 	 */
+	
+	public String getDerivativeUrl(String type) {
+		return this.derivatives.get(type);
+	}
+	
+	public void addDerivativeUrl(String type, String url) {
+		this.derivatives.put(type, url);
+	}
 	
 	// This function is used to check if the object passed in is the same as the current instance
 	@Override
