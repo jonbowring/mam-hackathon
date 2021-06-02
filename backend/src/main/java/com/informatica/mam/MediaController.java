@@ -2,10 +2,7 @@ package com.informatica.mam;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -13,18 +10,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.imageio.ImageIO;
-
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -43,17 +34,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.sun.xml.messaging.saaj.util.ByteInputStream;
-
 import net.minidev.json.JSONObject;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,41 +47,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Random;
-
-import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
-import software.amazon.awssdk.core.waiters.WaiterResponse;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
-//import software.amazon.awssdk.core.sync.RequestBody; // This will need to be used explicitly to avoid collision
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
-import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest.Builder;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
-import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
-import software.amazon.awssdk.services.s3.model.CreateMultipartUploadResponse;
-import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
-import software.amazon.awssdk.services.s3.model.CompletedPart;
-import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
-import software.amazon.awssdk.services.s3.model.UploadPartRequest;
-import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
-import software.amazon.awssdk.services.s3.waiters.S3Waiter;
-import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 
 
 /*
@@ -475,27 +434,6 @@ public class MediaController {
 				.body(entityModel);
 		
 	}
-	
-/*	@PutMapping("/media/hierarchy/{id}")
-	Media replaceConfig(@RequestBody Media newMediaHierarchyUpdate, @PathVariable String id) {
-		
-		Media updatedConfig = repository.findById(id)
-				.map(media -> {
-					if(newMediaHierarchyUpdate.getHierarchyCode()!=null) {
-						media.setHierarchyCode(newMediaHierarchyUpdate.getHierarchyCode());
-					}
-					
-					return repository.save(media);
-				})
-				.orElseGet(() -> {
-					newMediaHierarchyUpdate.setId(id);
-					return repository.save(newMediaHierarchyUpdate);
-				});
-		return updatedConfig;
-		
-	}
-	
-	*/
 	
 	/*
 	 * ------------------
