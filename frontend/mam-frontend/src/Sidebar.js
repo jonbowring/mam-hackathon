@@ -71,7 +71,7 @@ export class Sidebar extends Component {
           url: `http://localhost:8080/mediaHierarchy`
           })
           .then((response) => {
-           response.data._embedded.mediaHierarchies.map((data, i) => {
+           response.data._embedded.mediaHierarchies.forEach((data, i) => {
               console.log('hierarchy name -'+data.hierarchyName);
             
             this.setState({
