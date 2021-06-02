@@ -1,31 +1,29 @@
 package com.informatica.mam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.imageio.ImageIO;
-
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,13 +34,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.sun.xml.messaging.saaj.util.ByteInputStream;
-
+import net.minidev.json.JSONObject;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,38 +47,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.util.Random;
-
-import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
-import software.amazon.awssdk.core.waiters.WaiterResponse;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
-//import software.amazon.awssdk.core.sync.RequestBody; // This will need to be used explicitly to avoid collision
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
-import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest.Builder;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
-import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
-import software.amazon.awssdk.services.s3.model.CreateMultipartUploadResponse;
-import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
-import software.amazon.awssdk.services.s3.model.CompletedPart;
-import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
-import software.amazon.awssdk.services.s3.model.UploadPartRequest;
-import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
-import software.amazon.awssdk.services.s3.waiters.S3Waiter;
-import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 
 
 /*
@@ -103,17 +76,18 @@ public class MediaController {
 	private Region s3Region;
 	@Value("${cloud.aws.region.name}")
 	private String s3RegionName;
+	
+	@Autowired
+	private ConfigRepository configRepo;
 
 	
 
 	@Value("${cloud.aws.bucket.name}")
 	//private String s3Bucket;
 	private String s3Bucket="jbowring-mam-hackathon";
-	//@Value("${cloud.aws.access-key}")
-	//private String s3AccessKey;
-	//@Value("${cloud.aws.secret-key}")
-	//private String s3SecretKey;
 	private	String fileEncoding;
+	@Value("${derivative.resize.url}")
+	private String derivativeResizeUrl;
 	
 
 	/*
@@ -127,7 +101,6 @@ public class MediaController {
 		this.assembler = assembler;
 		// Configure the AWS S3 client
 		this.s3Region = Region.AP_SOUTHEAST_2;
-		//this.s3Region = Region.of(s3RegionName);
 		this.s3 = S3Client.builder().region(this.s3Region).build();
 	}
 	
@@ -264,6 +237,9 @@ public class MediaController {
 	@PostMapping("/media")
 	CollectionModel<EntityModel<Media>> newMedia(@RequestParam("files") MultipartFile[] multiFiles, RedirectAttributes redirectAttributes) throws S3Exception, AwsServiceException, SdkClientException, IOException {
 		
+		// Read the derivative config if existing
+		Optional<Config> config = configRepo.findById("derivatives");
+		
 		// Instantiate the medias list
 		List<EntityModel<Media>> medias = new ArrayList<>();
 
@@ -282,11 +258,16 @@ public class MediaController {
 				
 				InputStream fs = new FileInputStream(newFile);
 				InputStreamReader   isr = new InputStreamReader(fs);
-				 fileEncoding=isr.getEncoding();
+				fileEncoding=isr.getEncoding();
+				 
+				// Close the file streams
+				os.close();
+				fs.close();
 			}
 			BufferedImage bImg=ImageIO.read(multiFile.getInputStream());
-			int width=bImg.getWidth();
-			int height = bImg.getHeight();
+			String contentType = multiFile.getContentType();
+			int width = contentType.substring(0,5).equals("image") ? bImg.getWidth() : -1;
+			int height = contentType.substring(0,5).equals("image") ? bImg.getHeight() : -1;
 			String hierarchyCode="";
 			
 			// Instantiate a new Media object
@@ -298,28 +279,115 @@ public class MediaController {
 					.bucket(s3Bucket)
 					.key(s3FileName)
 					.build();
-			PutObjectResponse s3Response = s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
+			s3.putObject(objectRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newFile));
 			
 			// Get the public URL and save it to the database
 			String url = s3.utilities().getUrl(builder -> builder.bucket(s3Bucket).key(s3FileName)).toExternalForm();
-			//entityModel.getContent().setUrl(url);
-			//Optional<Media> urlMedia = repository.findById(entityModel.getContent().getId());
 			
-		Media urlMedia = repository.findById(entityModel.getContent().getId())
-				.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
-		urlMedia.setUrl(url);
-		repository.save(urlMedia);
-		
-	 
-		
-		EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId(),hierarchyCode));
+			// Save the url to the database
+			Media urlMedia = repository.findById(entityModel.getContent().getId())
+					.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
+			urlMedia.setUrl(url);
+			repository.save(urlMedia);
+			
+			EntityModel<Media> entityModel1 =  assembler.toModel(new Media(multiFile.getOriginalFilename(),fileExtension,multiFile.getContentType(), multiFile.getSize(),fileEncoding,width,height,url,entityModel.getContent().getId(),hierarchyCode));
+			
 			// Delete the temp file
 			newFile.delete();
 			
 			// Add the new file to the list
 			medias.add(entityModel1);
 			
-		}
+			// If derivatives are configured and the file type is an image then generate the derivative files and save them
+			if(config != null && contentType.substring(0,5).equals("image")) {
+				
+				HashMap<String, String> properties = config.get().getProperties();
+				
+				// Loop through each of the derivatives
+				properties.forEach((key, value) -> {
+					
+					// Split out the derivative settings
+					String[] values = value.split(":");
+					String postfix = values[0];
+					int imgWidth = Integer.parseInt(values[1]);
+					int imgHeight = Integer.parseInt(values[2]);
+					
+					// Initialise the generate derivative request and headers
+					RestTemplate rest = new RestTemplate();
+					HttpHeaders headers = new HttpHeaders();
+					headers.setContentType(MediaType.APPLICATION_JSON);
+					headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+					
+					// Initialise the JSON body
+					JSONObject jsonRequest = new JSONObject();
+					jsonRequest.put("url", url);
+					
+					// If width is provided then add it to the request
+					if(imgWidth > 0) {
+						jsonRequest.put("width", imgWidth);
+					}
+					
+					// If height is provided then add it to the request
+					if(imgHeight > 0) {
+						jsonRequest.put("height", imgHeight);
+					}
+					
+					// Send the request
+					HttpEntity<String> request = new HttpEntity<String>(jsonRequest.toString(), headers);
+					ResponseEntity<byte[]> response = rest.exchange(
+							derivativeResizeUrl,
+				            HttpMethod.POST, request, byte[].class, "1");
+
+				    if (response.getStatusCode() == HttpStatus.OK) {
+				        
+				    	// Create a file from the base64 bytes
+						File newDerivativeFile = new File(uuid.toString() + "." + postfix + ".tmp");
+						try (OutputStream os = new FileOutputStream(newDerivativeFile)) {
+							
+							os.write(response.getBody());
+							
+							InputStream fs = new FileInputStream(newDerivativeFile);
+							InputStreamReader isr = new InputStreamReader(fs);
+							fileEncoding=isr.getEncoding();
+							
+							// Close the file streams
+							os.close();
+							fs.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						// Generate the derivative file name by incorporating the postfix
+						String[] fileNameTokens = s3FileName.split("\\.(?=[^\\.]+$)");
+						String s3DerivativeName = fileNameTokens[0] + "." + postfix + "." + fileNameTokens[1];
+								
+						// Upload the file to S3
+						PutObjectRequest derivativeRequest = PutObjectRequest.builder()
+								.bucket(s3Bucket)
+								.key(s3DerivativeName)
+								.build();
+						s3.putObject(derivativeRequest, software.amazon.awssdk.core.sync.RequestBody.fromFile(newDerivativeFile));
+						
+						// Get the public URL
+						String derivativeUrl = s3.utilities().getUrl(builder -> builder.bucket(s3Bucket).key(s3DerivativeName)).toExternalForm();
+						
+						// Save the derivative to the database
+						Media derivativeMedia = repository.findById(entityModel.getContent().getId())
+								.orElseThrow(() -> new MediaNotFoundException(entityModel.getContent().getId()));
+						derivativeMedia.addDerivativeUrl(key, derivativeUrl);
+						repository.save(derivativeMedia);
+						
+						// Clean up the temp file
+						newDerivativeFile.delete();
+						
+						
+				    } // End if derivative response is ok
+					
+				}); // End for each derivative properties loop
+				
+			} // End if derivative config is not null and image type
+			
+		} // End loop through uploaded files
 		
 		return CollectionModel.of(medias, //
 				linkTo(methodOn(MediaController.class).all()).withSelfRel());
@@ -366,27 +434,6 @@ public class MediaController {
 				.body(entityModel);
 		
 	}
-	
-/*	@PutMapping("/media/hierarchy/{id}")
-	Media replaceConfig(@RequestBody Media newMediaHierarchyUpdate, @PathVariable String id) {
-		
-		Media updatedConfig = repository.findById(id)
-				.map(media -> {
-					if(newMediaHierarchyUpdate.getHierarchyCode()!=null) {
-						media.setHierarchyCode(newMediaHierarchyUpdate.getHierarchyCode());
-					}
-					
-					return repository.save(media);
-				})
-				.orElseGet(() -> {
-					newMediaHierarchyUpdate.setId(id);
-					return repository.save(newMediaHierarchyUpdate);
-				});
-		return updatedConfig;
-		
-	}
-	
-	*/
 	
 	/*
 	 * ------------------
