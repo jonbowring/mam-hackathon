@@ -1,252 +1,20 @@
-@font-face {
-  font-family: 'Roboto';
-  src: url('Roboto-Regular.ttf') format('ttf');
-}
-
-/*
-* =======================================
-* Resets
-* =======================================
-*/
-
-/* Box sizing rules */
-*,
-*::before,
-*::after {
-  box-sizing: border-box !important;
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
-}
-
-/* Remove default padding */
-ul[class],
-ol[class] {
-  padding: 0;
-}
-
-/* Remove default margin */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-ul[class],
-ol[class],
-li,
-figure,
-figcaption,
-blockquote,
-dl,
-dd {
-  margin: 0;
-  padding: 0;
-}
-
-/* Set core body defaults */
-body {
-  min-height: 100vh;
-  scroll-behavior: smooth;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5;
-}
-
-/* Remove list styles on ul, ol elements with a class attribute */
-ul[class],
-ol[class] {
-  list-style: none;
-}
-
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  text-decoration-skip-ink: auto;
-}
-
-/* Make images easier to work with */
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* Natural flow and rhythm in articles by default */
-article > * + * {
-  margin-top: 1em;
-}
-
-/* Inherit fonts for inputs and buttons */
-input,
-button,
-textarea,
-select {
-  font: inherit;
-}
-
-/*
-* =======================================
-* Desktop Styling
-* =======================================
-*/
-
-/*
-* Layouts
-* ---------------------------------------
-*/
-
-.App {
-  width: 100%;
-  min-height: 100vh;
-  display: grid;
-  justify-items: stretch;
-  align-items: stretch;
-  justify-content: stretch;
-  align-content: stretch;
-  grid-template-columns: 15vw 1fr 20vw;
-  grid-template-rows: 10vh 1fr 10vh;
-  overflow: hidden;
-}
-
-.app-header {
-  grid-column: 1 / span 3;
-  grid-row: 1 / span 1;
+.app__page
+{
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  margin-left: 0%;
 }
+.sidebar
+{
+ justify-content: space-between;
 
-.app-nav {
-  grid-column: 1 / span 1;
-  grid-row: 2 / span 2;
-}
-
-.app-content {
-  grid-column: 2 / span 2;
-  grid-row: 2 / span 1;
-  display: grid;
-  justify-items: stretch;
-  align-items: stretch;
-  justify-content: stretch;
-  align-content: stretch;
-  grid-template-columns: 1fr;
-  grid-template-rows: 7vh 1fr;
-}
-
-.app-content-menu {
-  grid-column: 1 / span 1;
-  grid-row: 1 / span 1;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.app-content-inner {
-  grid-column: 1 / span 1;
-  grid-row: 2 / span 1;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: center;
-}
-
-.app-footer {
-  grid-column: 2 / span 2;
-  grid-row: 3 / span 1;
-}
-
-
-
-/*
-* Elements
-* ---------------------------------------
-*/
-
-h1 {
-  font-size: 1.5rem;
-}
-
-h2 {
-  font-size: 1.2rem;
-}
-
-h3, th {
-  font-size: 1rem;
-}
-
-p, span, ul, ol, td {
-  font-size: 0.8rem;
-}
-
-a {
-  background-color: white;
-  color: black;
-  font-size: 1.0rem;
-  font: inherit;
-  margin: 0px;
-}
-
-#div1, #div2 {
-  position: absolute;
-  width: 400px;
-  }
-  #div1 {
-  left: 0;
-  bottom: 400px;
-  }
-  #div2 {
-  left: 100px;
-  bottom: 400px;
-  }
-/*
-* Classes
-* ---------------------------------------
-*/
-
-.app-header, .app-nav, .app-content, .app-footer {
-  overflow: hidden;
-  z-index: 1;
-}
-
-.app-header {
-  background: #000;
-  color: #fff;
-  padding-left: 1rem;
-}
-
-.app-nav {
-  background: #414042;
-  color: #fff;
-  padding-left: 1rem;
-}
-
-.app-content-menu {
-  background: #fff;
-  border-bottom: 1px solid #bbb;
-  width: 98%;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  z-index: 2;
-}
-
-.app-content-outer {
-  background: #eee;
-  padding: 1rem;
-}
-
-.app-content-inner {
-  background: #fff;
-  box-shadow: 2px 2px 2px #9c9c9c;
-  width: 98%;
-  z-index: 2;
-}
+ }
 
 .app-aside-hidden, .app-aside-visible {
   background: #414042;
   color: #fff;
   position: fixed;
   padding: 1rem;
+  padding-top: 50px;
   width: 40vw;
   height: 100vh;
   top: 0;
@@ -260,7 +28,7 @@ a {
 }
 
 .app-aside-hidden {
-  right: -40vw;
+  right: -50vw;
 }
 
 .app-aside-visible {
@@ -270,7 +38,7 @@ a {
 .closeButton {
   font-size: 3rem;
   color: white;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
 }
 
@@ -304,12 +72,69 @@ a {
   color: #000;
 }
 
-.grid-image {
-  height: 30vh;
-  box-shadow: 2px 2px 2px #9c9c9c;
-  margin-top: 0.5rem;
-}
 
 .infaLogo {
   height: 6vh;
+}
+.grid-image {
+  position: relative;
+    background-position:center center;
+    background-size:  cover;
+    background-repeat: no-repeat;
+    width:170px;
+    height: 180px;
+    box-shadow: 8px 5px 17px -7px rgba(0,0,0,0.75);
+    border-radius: 10px;
+    margin: 15px;
+    transition: transform;
+    cursor: pointer;
+}
+.grid-image:hover{
+  transform: scale(1.07);
+}
+.popImage {
+    width:230px;
+    height: 120px;
+    box-shadow: 8px 5px 17px -7px rgba(0,0,0,0.75);
+    border-radius: 10px;
+    transition: transform;
+    cursor: pointer;
+    margin-top:0;
+}
+.hide
+{
+  display: flex;
+  flex-direction: row;
+  margin-right: 40vw;
+}
+.show
+{
+  display: flex;
+  flex-direction: row;
+  margin-left: 0vw;
+}
+.app-content-menu
+{
+  margin: auto;
+  width: 250px;
+  height: 180px;
+  border: 3px solid black;
+  position: relative;
+  z-index: 10;
+  background-color: gray;
+ 
+}
+.app-content-hide
+{
+ display: none;
+ 
+}
+#div1
+{
+  margin: 1px;
+  margin-left: 5px;
+}
+#div2
+{
+  margin: 1px;
 }

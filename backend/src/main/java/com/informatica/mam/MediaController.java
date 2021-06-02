@@ -458,7 +458,9 @@ public class MediaController {
 					media.setFileEncoding(newMedia.getFileEncoding());
 					if(null!=newMedia.getMimeType())
 					media.setMimeType(newMedia.getMimeType());
-					return repository.save(media);
+					if(null!=newMedia.getHierarchyCode())
+						media.setHierarchyCode(newMedia.getHierarchyCode());
+						return repository.save(media);
 					
 				})
 				.orElseGet(() -> {
@@ -474,7 +476,7 @@ public class MediaController {
 		
 	}
 	
-	@PutMapping("/media/hierarchy/{id}")
+/*	@PutMapping("/media/hierarchy/{id}")
 	Media replaceConfig(@RequestBody Media newMediaHierarchyUpdate, @PathVariable String id) {
 		
 		Media updatedConfig = repository.findById(id)
@@ -493,6 +495,7 @@ public class MediaController {
 		
 	}
 	
+	*/
 	
 	/*
 	 * ------------------

@@ -1,11 +1,16 @@
 import React from 'react';
 import axios from 'axios';
 import './App.css';
-import InfaLogo from './infa-logo.svg';
 import { MediaModel } from './MediaModel';
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer } from 'react-notifications';
 import { NotificationManager } from 'react-notifications';
+import Header  from './Header';
+import Sidebar from './Sidebar';
+import Button from '@material-ui/core/Button';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
+
+
 
 class App extends React.Component {
   
@@ -13,12 +18,25 @@ class App extends React.Component {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.fileInput = React.createRef();
+    this.handleMedia = this.handleMedia.bind(this);
+    this.fetchMedia = this.fetchMedia.bind(this);
+    this.searchMedia = this.searchMedia.bind(this);
+    this.DisplayEntireMedia = this.DisplayEntireMedia.bind(this);
     this.state = {
       medias: [],
       selectedMedia: null,
       popoutVisible: false,
-      popoutClass: 'app-aside-hidden'
-    }
+      popoutClass: 'app-aside-hidden',
+      showVisible:true,
+      showClass:'show',
+      setVisible: false,
+      setClass: 'hide',
+      MediaClass:'app-content-hide',
+      MediaVisible:false,
+      hierarchyCode:'1234-1',
+      allmedias:[]
+     }
+   
   }
   componentDidMount() {
     axios({
@@ -31,6 +49,23 @@ class App extends React.Component {
         return newMedias.push(new MediaModel(data));
       });
       this.setState( {medias: newMedias });
+      this.setState( {allmedias: newMedias });
+    });
+  }
+ 
+  DisplayEntireMedia() {
+    axios({
+      method: 'get',
+      url: 'http://localhost:8080/media'
+    })
+    .then((response) => {
+      this.setState(state=>({
+        medias:[]}));
+      let newMedias = this.state.medias;
+      response.data._embedded.medias.map((data, i) => {
+        return newMedias.push(new MediaModel(data));
+      });
+      this.setState( {medias: newMedias });
     });
   }
  
@@ -38,26 +73,37 @@ class App extends React.Component {
   closePopout() {
     this.setState({ 
       'popoutClass': 'app-aside-hidden', 
-      'popoutVisible': false 
+      'popoutVisible': false,
+      'showClass':'show',
+      'showVisible':true,
     });
   }
 
   selectMedia(index, event) {
     
     let media = this.state.medias[index];
-
     let popoutClass = '';
     let popoutVisible = false;
-    
+    let sideClass = '';
+    let sideVisible = false;
+    let showClass = '';
+    let showVisible = true;
     if(!this.state.popoutVisible) {
       
       popoutClass = 'app-aside-visible';
       popoutVisible = true;
-
+      sideClass = 'side-visible';
+      sideVisible = true;
+      showClass = 'hide';
+      showVisible = false;
       this.setState({ 
         'popoutClass': popoutClass, 
         'popoutVisible': popoutVisible,
-        'selectedMedia': media 
+        'selectedMedia': media ,
+        'showClass':showClass,
+        'showVisible':showVisible,
+        'sideClass':sideClass,
+        'sideVisible':sideVisible,
       });
 
     }
@@ -86,7 +132,45 @@ class App extends React.Component {
         this.setState({ medias });  
       })  
     
-  } 
+  }
+  mediaLibrary(e){
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/mediaHierarchy`
+      })
+      .then((response) => {
+      let newHierarchy = this.state.hierarchies;
+        response.data._embedded.mediaHierarchies.map((data, i) => {
+          console.log('hierarchy name -'+data.hierarchyName);
+          this.setState({
+          hierarchyName:this.state.hierarchyName.concat(data.hierarchyName)
+        })
+        
+        this.setState({
+          data:response.data._embedded.mediaHierarchies
+        })
+          
+          
+        //  return newHierarchy.push(new HierarchyModel(data));
+        });
+        this.setState( {hierarchies: newHierarchy });
+        
+      });
+  }
+  handleAttrChange(id, event) {
+    
+    axios({
+			method: 'put',
+			url: `http://localhost:8080/media/${id}`,
+			data: {
+        [event.target.id]: event.target.value
+      }
+		})
+		.then((response) => {
+			console.log(response)
+		});
+    
+  }
 
   handleSubmit(event) {
     
@@ -115,32 +199,82 @@ class App extends React.Component {
       NotificationManager.success( 'File Upload Failed!');
     });
     NotificationManager.success( 'File Upload was Successful!');
-   
- 
-    
-   
-   
-    
+
   }
-  
+  handleMedia(e){
+    if(this.state.MediaVisible)
+    {
+    this.setState(state=>({
+        MediaVisible:false,
+        MediaClass:'app-content-hide'
+    }
+    ));
+      }else if(!this.state.MediaVisible)
+        {
+            this.setState(state=>({
+            MediaVisible:true,
+             MediaClass:'app-content-menu'
+        }));
+        }
+  }
+  fetchMedia(hierarchyCode,e) {
+    axios({
+      method: 'get',
+      url: 'http://localhost:8080/media'
+    })
+    .then((response) => {
+      this.setState(state=>({
+        medias:[]}));
+      let newMedias = this.state.medias;
+      response.data._embedded.medias.map((data, i) => {
+        if(data.hierarchyCode===hierarchyCode)
+        return newMedias.push(new MediaModel(data));
+      });
+      this.setState( {medias: newMedias });
+    });
+  }
+  searchMedia(e) {
+    let value = e.target.value.toLowerCase();
+        let result = [];
+        console.log(this.state.medias);
+        
+        result = this.state.allmedias.filter((data) => {
+            
+        return data.fileName.toLowerCase().search(value) != -1 || data.id.search(value) != -1;
+        });
+        this.setState(state=>({
+          medias:[]}));
+          this.setState( {medias: result });
+          console.log(result);
+  }
   render() {
-    
+    const hierarchyCode=this.state.hierarchyCode;
     return (
      
      <div className="App">
-        <header className="app-header">
-          <img className="infaLogo" src={ InfaLogo } alt="Informatica"/>
-        </header>
-        <nav className="app-nav">
-          <h1>Nav</h1>
-        </nav>
+        <Header/>
+        
+        <div className='app__page'> 
+        <Sidebar className="this.state.side-class" action={ this.handleMedia }  mediaAction={ this.fetchMedia }  mediaSearch={ this.searchMedia } displayMedia={ this.DisplayEntireMedia } />
+        <div className={ this.state.showClass }>
+        
         <section className="app-content">
-          <div className="app-content-menu">
+          <div className={ this.state.MediaClass }>
+            <center>
             <h1>Media</h1>
+            <br/><br/>
             <form onSubmit={this.handleSubmit}>
-              <input type="file" ref={this.fileInput} multiple/>
-              <button type="submit">Submit</button>
+            <Button onClick={() => this.fileInput.click()}>
+            <PhotoLibraryIcon/>
+            </Button>
+            <input type="file"ref={(fileInput) => {
+                    this.fileInput = fileInput;
+                  }} multiple style={{ display: 'none'}}  />
+            
+           
+            <Button variant="contained" type="submit">Submit</Button>
             </form>
+            </center>
           </div>
           <div className="app-content-outer">
             <div className="app-content-inner">
@@ -153,52 +287,72 @@ class App extends React.Component {
           </div>
           
         </section>
-        <footer className="app-footer">
-          <h1>Footer</h1>
-        </footer>
+        </div>
+        </div>
+       
         <aside className={ this.state.popoutClass }>
           <span className="closeButton" onClick={ () => this.closePopout() }>&times;</span>
           <form className="popForm">
+          <div>
+              
+              <img className="popImage"  src={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }/>
+              <div id='div1'>
+            <Button className="deleteMedia" variant="contained"  onClick={(e) => this.deleteRow(this.state.selectedMedia.id, e)}>Delete</Button>
+
+
+          </div>
+          <div id='div2'>
+          <Button className="downloadMedia" variant="contained"   href={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' } download>Download</Button>
+          </div>
+            </div>
             <div>
               <label className="popLabel">ID:</label>
-              <input className="popInput" type="text" id="popId" name="popId" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.id : '' }/>
+              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.id : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Name:</label>
-              <input className="popInput" type="text" id="popFilename" name="popFilename" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileName : '' }/>
+              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.fileName : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Extension:</label>
-              <input className="popInput" type="text" id="popFileExtension" name="popFileExtension" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileExtension : '' }/>
+              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.fileExtension : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Encoding:</label>
-              <input className="popInput" type="text" id="popFileEncoding" name="popFileEncoding" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileEncoding : '' }/>
+              <input className="popInput" type="text" id="fileEncoding" name="popFileEncoding" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileEncoding : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">File Size:</label>
-              <input className="popInput" type="text" id="popFileSize" name="popFileSize" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileSize : '' }/>
+              <input className="popInput" type="text" id="fileSize" name="popFileSize" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.fileSize : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">Mime Type:</label>
-              <input className="popInput" type="text" id="popMimeType" name="popMimeType" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.mimeType : '' }/>
+              <input className="popInput" type="text" id="mimeType" name="popMimeType" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.mimeType : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
             </div>
             <div>
               <label className="popLabel">URL:</label>
-              <input className="popInput" type="text" id="popURL" name="popURL" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }/>
+              <label className="popInput">{ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' }</label>
+            </div>
+            <div>
+              <label for="hierarchy" className="popLabel">Hierarchy Code:</label>
+              <input className="popInput" type="text" id="hierarchyCode" name="popHierarchyCode" list="hierarchyList" defaultValue={ this.state.selectedMedia != null ? this.state.selectedMedia.hierarchyCode : '' } onChange={ (event) => this.handleAttrChange(this.state.selectedMedia.id, event) }/>
+             
+              <datalist id="hierarchyList">
+                       <option value="1234-1">Product Images</option>
+                       <option value="1234-2">Item Images</option>
+                       <option value="1235-1">SDS</option>
+                       <option value="1235-2">Reports</option>
+              </datalist>
+               
             </div>
           </form>
-          <div id='div1'>
-            <button className="deleteMedia" onClick={(e) => this.deleteRow(this.state.selectedMedia.id, e)}>Delete</button>
-          </div>
-          <div id='div2'>
-          <a href={ this.state.selectedMedia != null ? this.state.selectedMedia.url : '' } download>Download</a>
-          </div>
+          
           
         </aside>
         
-        <NotificationContainer />s
+        <NotificationContainer />
       </div>
+      
     ); // End return
   } // End render()
   

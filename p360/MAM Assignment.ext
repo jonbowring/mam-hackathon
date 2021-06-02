@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ppm-export-template sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.file.FileManager" name="MAM Assignment" version="13" proxy="121595[|]ExportTemplate_1572423771408027[|]3800">
+  <template>
+    <modules_content_type>html</modules_content_type>
+    <fileEncoding>UTF-8</fileEncoding>
+    <formatMap></formatMap>
+    <history></history>
+    <remarks><![CDATA[]]></remarks>
+    <exportloglevel>40</exportloglevel>
+    <purpose preview_single="true" preview_maxcount="1" preview_editable="false">PREVIEW</purpose>
+  </template>
+  <changelog>
+    <created byintid="108" byid="pim" byname="Ten, Tina" datetime="1622522606706"/>
+    <lastchanged byintid="108" byid="pim" byname="Ten, Tina" datetime="1622523583923"/>
+  </changelog>
+  <functionManager sys-id="1" factory-id="hlr.texttemplate.FunctionManager.factory" context="export"/>
+  <alias>
+    <aliasfield name="Item.Catalog.Catalog identifier" datatype="DataTypeArticleAssortment" aliastransitionfield="Item.Catalog"><![CDATA[<field initial-identifier="SupplierCatalog.Identifier" identifier="SupplierCatalog.Identifier17ffb9383ede5151:-2c980ba3:179c5912551:-7f28" name="%field.SupplierCatalog.Identifier.name"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="CatalogType.Identifier"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="CatalogType" dest-entity-type="CatalogType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Item.Item no." datatype="DataTypeArticleAssortment"><![CDATA[<field initial-identifier="Article.SupplierAID" identifier="Article.SupplierAID17ffb9383ede5151:-2c980ba3:179c5912551:-7f30" name="%field.Article.SupplierAID.name"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleType.SupplierAid"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleType" dest-entity-type="ArticleType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliastransitionfield name="Item.Catalog" datatype="DataTypeArticleAssortment"><![CDATA[<field initial-identifier="Article.CatalogProxy" identifier="Article.CatalogProxy" name="%field.Article.CatalogProxy.name"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleType.CatalogProxy"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleType" dest-entity-type="ArticleType" revision-token="1"/></field-path></field>]]></aliastransitionfield>
+  </alias>
+  <variables>
+    <variable id="MAM_HOST" name="MAM_HOST" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
+      <description><![CDATA[]]></description>
+      <value><![CDATA[192.168.93.1]]></value>
+    </variable>
+    <variable id="MAM_PORT" name="MAM_PORT" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
+      <description><![CDATA[]]></description>
+      <value><![CDATA[8080]]></value>
+    </variable>
+    <variable id="P360_AUTH" name="P360_AUTH" datatype="DataTypeString" mandatory="true" editable="false" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
+      <description><![CDATA[]]></description>
+      <value><![CDATA[Basic cGltOkhlaWxlcjMzIQ]]></value>
+    </variable>
+    <variable id="P360_HOST" name="P360_HOST" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" updatemode="0" valuemode="0">
+      <description><![CDATA[]]></description>
+      <value><![CDATA[192.168.244.163]]></value>
+    </variable>
+    <variable id="P360_PORT" name="P360_PORT" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
+      <description><![CDATA[]]></description>
+      <value><![CDATA[1512]]></value>
+    </variable>
+  </variables>
+  <dataproviders>
+    <dataprovider name="Item list" id="1622517413752" typeid="ArticleList" sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.dataprovider.Parameter">
+      <parameter id="catalog" name="Catalog" datatype="DataTypeCatalogWithNotSpecifiedValue" mandatory="true" editable="true" many="false" hosttype="dataProvider" hostobject="1622517413752" reftype="" refobject="">
+        <description><![CDATA[A supplier catalog or the master catalog]]></description>
+        <value><![CDATA[1[|]MASTER[|]2900]]></value>
+      </parameter>
+      <parameter id="assortment" name="Assortment" datatype="DataTypeArticleAssortment" mandatory="false" editable="true" many="false" hosttype="dataProvider" hostobject="1622517413752" reftype="" refobject="">
+        <description><![CDATA[An item assortment or a list of items]]></description>
+        <value><![CDATA[]]></value>
+      </parameter>
+      <parameter id="updateAssortment" name="Update assortment" datatype="DataTypeBoolean" mandatory="false" editable="true" many="false" hosttype="dataProvider" hostobject="1622517413752" reftype="" refobject="">
+        <description><![CDATA[Do you want to update the assigned assortment directly before the export?
+This parameter is only effective with non-static item assortments.]]></description>
+        <value><![CDATA[]]></value>
+      </parameter>
+      <parameter id="ArticleListDataProvider.revision" name="Version" datatype="DataTypeRevision" mandatory="true" editable="false" many="false" hosttype="dataProvider" hostobject="1622517413752" reftype="" refobject="">
+        <description><![CDATA[Version of exported data]]></description>
+        <value><![CDATA[1]]></value>
+      </parameter>
+    </dataprovider>
+  </dataproviders>
+  <exportpoststeps>
+    <exportpoststep name="Add file" id="IncludeStaticFile" sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.dataprovider.Parameter">
+      <parameter id="staticFile" name="File" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="exportPostStep" hostobject="Add file" reftype="" refobject="">
+        <description><![CDATA[The name of the file to be added.]]></description>
+        <value><![CDATA[mam-10-preview.zip]]></value>
+      </parameter>
+      <parameter id="PARAM_CANCEL_IN_ERROR_CASE" name="Cancel export in case of error" datatype="DataTypeBoolean" mandatory="true" editable="true" many="false" hosttype="exportPostStep" hostobject="Add file" reftype="" refobject="">
+        <description><![CDATA[Specifies if the export run should be canceled if an error occurs during the post-export step processing, or if errors should only be logged.]]></description>
+        <value><![CDATA[0]]></value>
+      </parameter>
+    </exportpoststep>
+  </exportpoststeps>
+  <exportfileconfiguration advanced="false"/>
+  <modules sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.export.core.model.ExportTemplateModule">
+    <module name=" Header" id="1622522606706">
+      <datatype type=""/>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1622522606706" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="A form for assigning media assets to items in Product 360">
+		<meta name="keywords" content="mam,assign">
+		<meta name="author" content="Jonathon Bowring">
+		<title>MAM Assignment</title>
+		<link rel="stylesheet" href="styles.css" />
+		<link rel="icon" type="image/png" href="favicon.png">
+		<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+		<script>
+
+			// Execute when the document is ready
+			$(document).ready(function() {
+
+				// Get all media metadata when the page loads
+				$.ajax({
+					method: "GET",
+					url: "http://{%MAM_HOST}:{%MAM_PORT}/media"
+				})
+				.done(function(res) {
+					console.log(res);
+					res._embedded.medias.forEach(media => {
+						$("main").append(`
+						<div class="asset">
+							<img src="${ media.mimeType.substr(0,5) == 'image' ? media.url : 'file.png' }" alt="${ media.fileName }"/>
+							<span class="filename">${ media.fileName }</span>
+							<span class="fileid">${ media.id }</span>
+						</div>
+						`);
+					})
+				})
+				.fail(function(err) {
+					console.log(err);
+				});
+
+				// -----------------
+				// Event handlers
+				// -----------------
+
+				// Filter the assets using the search term
+				$('#search').on('input', function() {
+
+					// Get the search terms
+					var term = $(this).val();
+
+					if(term.length > 0) {
+						
+						// Hide all of the assets
+						$('.asset').hide();
+
+						// Search through each of the assets
+						$('.asset').each(function() {
+
+							// Show the asset if the fileid contains the search term
+							if($(this).find('.fileid').html().toLowerCase().indexOf(term.toLowerCase()) >= 0) {
+								$(this).show();
+							}
+
+							// Show the asset if the filename contains the search term
+							if($(this).find('.filename').html().toLowerCase().indexOf(term.toLowerCase()) >= 0) {
+								$(this).show();
+							}
+
+						});
+
+					}
+					else {
+
+						// Show all of the assets
+						$('.asset').show();
+					}
+
+				});
+				
+				// Select an asset when it is clicked
+				$('body').on('click','.asset', function() {
+					
+					// Clear any previous selections
+					$('.asset').removeClass('selected');
+					$('.success').hide();
+					$('.error').hide();
+
+					// Select the clicked asset
+					$(this).addClass('selected');
+
+				});
+
+				// Clear the search terms and the selection when the clear button is clicked
+				$('.clear').click(function() {
+					$('.asset').removeClass('selected');
+					$('.asset').show();
+					$('#search').val('');
+				});
+
+				// Assign the asset to the item when the assign button is clicked
+				$('.assign').click(function() {
+
+					var asset = $('.selected');
+					var id = asset.find('.fileid').html();
+					var filename = asset.find('.filename').html();
+					var url = asset.find('img').attr('src');
+					var itemno = $('#itemno').html();
+					var catalogue = $('#catalogue').html();
+					var type = $('#type').val();
+					
+					// Build the request data
+					var body = JSON.stringify({
+							"columns": [
+								{ "identifier": "ArticleAttributeValue.Value(\"Type\", \"English\", \"DEFAULT\")" },
+								{ "identifier": "ArticleAttributeValue.Value(\"ID\", \"English\", \"DEFAULT\")" },
+								{ "identifier": "ArticleAttributeValue.Value(\"Filename\", \"English\", \"DEFAULT\")" },
+								{ "identifier": "ArticleAttributeValue.Value(\"URL\", \"English\", \"DEFAULT\")" }
+							],
+							"rows": [
+								{
+									"object": {
+										"id": `'${itemno}'@'${catalogue}'`
+									},
+									"values": [
+										`${type}`,
+										`${id}`,
+										`${filename}`,
+										`${url}`
+									]
+								}
+							]
+						});
+						
+					console.log(body);
+					
+					// Save the assignment back into PIM
+					$.ajax({
+						method: "POST",
+						url: "http://{%P360_HOST}:{%P360_PORT}/rest/V1.0/list/Article",
+						headers: {
+							'Content-Type': 'application/json',
+							'Accept': 'application/json',
+							'Authorization': '{%P360_AUTH}'
+						},
+						data: body
+					})
+					.done(function(res) {
+						console.log(res);
+						$('.success').fadeIn();
+					})
+					.fail(function(err) {
+						console.log(err);
+						$('.error').fadeIn();
+					});
+
+				});
+				
+			});
+
+		</script>
+	</head>
+	<body>
+		<header>
+			<form name="assign" id="assign">
+			]]></content>
+    </module>
+    <module name="Item" id="1622522661695" dataprovider="1622517413752" parallelProcessing="true">
+      <datatype type="DataTypeArticleAssortment">
+        <datatype_params/>
+      </datatype>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1622522661695" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[<label class="tag">Item:</label>
+				<label id="itemno">{?EscapeValue {&Item.Item no.}}</label>
+				<label class="tag">Catalogue:</label>
+				<label id="catalogue">{?EscapeValue {&Item.Catalog.Catalog identifier}}</label>
+				<label class="tag">Type:</label>
+				<select id="type" name="type">
+				]]></content>
+    </module>
+    <module name="Media Types" id="1622522667240">
+      <datatype type=""/>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1622522667240" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[<option value="Standard image">Standard image</option>
+					<option value="Data sheet">Data sheet</option>
+					<option value="Other">Other</option>]]></content>
+    </module>
+    <module name="Footer" id="1622522674604">
+      <datatype type=""/>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1622522674604" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[</select>
+				<label class="tag">Search:</label>
+				<input type="text" name="search" id="search"/>
+				<label class="button clear">Clear</label>
+				<label class="button assign">Assign</label>
+			</form>
+			<span class="success">Saved successfully</span>
+			<span class="error">Error saving assignment</span>
+		</header>
+		<main>
+			
+		</main>
+	</body>
+</html>]]></content>
+    </module>
+  </modules>
+</ppm-export-template>
