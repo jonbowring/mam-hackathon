@@ -5,18 +5,22 @@
 }
 .sidebar
 {
- justify-content: space-between;
-
+ justify-content: flex-start;
  }
+
+.App {
+  position: relative;
+  top: 0;
+  left: 0;
+}
 
 .app-aside-hidden, .app-aside-visible {
   background: #414042;
   color: #fff;
   position: fixed;
-  padding: 1rem;
-  padding-top: 50px;
+  padding: 5rem 1rem 1rem 1rem;
   width: 40vw;
-  height: 100vh;
+  height: 100%;
   top: 0;
   z-index: 3;
   transition: right 0.5s ease-in-out 0s;
@@ -25,6 +29,8 @@
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: stretch;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .app-aside-hidden {
@@ -42,11 +48,15 @@
   cursor: pointer;
 }
 
+.popForm {
+  margin-bottom: 10rem;
+}
+
 .popForm div {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 1rem;
 }
@@ -55,11 +65,12 @@
   width: 10vw;
 }
 
-.popInput {
+.popInput, .popReadOnly {
   width: 25vw;
   background: #414042;
   color: #fff;
   border: none;
+  padding: 0.5rem;
 }
 
 .popInput:hover {
@@ -82,9 +93,7 @@
     background-size:  cover;
     background-repeat: no-repeat;
     width:170px;
-    height: 180px;
     box-shadow: 8px 5px 17px -7px rgba(0,0,0,0.75);
-    border-radius: 10px;
     margin: 15px;
     transition: transform;
     cursor: pointer;
@@ -93,14 +102,18 @@
   transform: scale(1.07);
 }
 .popImage {
-    width:230px;
-    height: 120px;
+    height: 200px;
     box-shadow: 8px 5px 17px -7px rgba(0,0,0,0.75);
     border-radius: 10px;
     transition: transform;
     cursor: pointer;
     margin-top:0;
 }
+
+.popForm h3 {
+  margin-top: 4rem;
+}
+
 .hide
 {
   display: flex;

@@ -11,7 +11,26 @@ import Button from '@material-ui/core/Button';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 
 
+function Derivatives(props) {
+  
+  const media = props.media;
 
+  if(media !== null) {
+    if(media.derivatives !== null) {
+      console.log(Object.entries(media.derivatives));
+      const nodes = Object.entries(media.derivatives).map((pair, index) => {
+        return <div key={pair[0]}><label className="popLabel">{ pair[0] }</label><Button className="downloadMedia" variant="contained" href={ pair[1] } download>Download</Button></div>
+      });
+      return nodes;
+    }
+    else {
+      return <span/>
+    }
+  }
+  else {
+    return <span/>
+  }
+}
 
 class App extends React.Component {
   
@@ -250,6 +269,7 @@ class App extends React.Component {
           this.setState( {medias: result });
           console.log(result);
   }
+
   render() {
     //const hierarchyCode=this.state.hierarchyCode;
     return (
@@ -264,18 +284,15 @@ class App extends React.Component {
         <section className="app-content">
           <div className={ this.state.MediaClass }>
             <center>
-            <h1>Media</h1>
-            <br/><br/>
-            <form onSubmit={this.handleSubmit}>
-            <Button onClick={() => this.fileInput.current && this.fileInput.current.click()} >
-            <PhotoLibraryIcon/>
-            </Button>
-            <input type="file" ref={this.fileInput} multiple style={{ display: 'none'}}   />
-            
-           
-            <Button variant="contained" type="submit">Submit</Button>
-            </form>
-            
+              <h1>Media</h1>
+              <br/><br/>
+              <form onSubmit={this.handleSubmit}>
+                <Button onClick={() => this.fileInput.current && this.fileInput.current.click()} >
+                <PhotoLibraryIcon/>
+                </Button>
+                <input type="file" ref={this.fileInput} multiple style={{ display: 'none'}}   />
+                <Button variant="contained" type="submit">Submit</Button>
+              </form>
             </center>
           </div>
           <div className="app-content-outer">
@@ -298,24 +315,21 @@ class App extends React.Component {
           <div>
               
               <img className="popImage" src={ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' } alt={ this.state.selectedMedia !== null ? this.state.selectedMedia.fileName : '' }/>
-              <div id='div1'>
-            <Button className="deleteMedia" variant="contained"  onClick={() => this.deleteRow(this.state.selectedMedia.id)}>Delete</Button>
-          </div>
-          <div id='div2'>
-          <Button className="downloadMedia" variant="contained"   href={ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' } download>Download</Button>
-          </div>
+          
             </div>
+            
+            <h3>Metadata:</h3>
             <div>
               <label className="popLabel">ID:</label>
-              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.id : '' }</label>
+              <label className="popReadOnly">{ this.state.selectedMedia !== null ? this.state.selectedMedia.id : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Name:</label>
-              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.fileName : '' }</label>
+              <label className="popReadOnly">{ this.state.selectedMedia !== null ? this.state.selectedMedia.fileName : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Extension:</label>
-              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.fileExtension : '' }</label>
+              <label className="popReadOnly">{ this.state.selectedMedia !== null ? this.state.selectedMedia.fileExtension : '' }</label>
             </div>
             <div>
               <label className="popLabel">File Encoding:</label>
@@ -331,7 +345,7 @@ class App extends React.Component {
             </div>
             <div>
               <label className="popLabel">URL:</label>
-              <label className="popInput">{ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' }</label>
+              <label className="popReadOnly">{ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' }</label>
             </div>
             <div>
               <label htmlFor="hierarchy" className="popLabel">Hierarchy Code:</label>
@@ -344,6 +358,18 @@ class App extends React.Component {
                        <option value="1235-2">Reports</option>
               </datalist>
                
+            </div>
+            
+            <h3>Download media asset:</h3>
+            <div>
+              <label className="popLabel">original</label>
+              <Button className="downloadMedia" variant="contained" href={ this.state.selectedMedia !== null ? this.state.selectedMedia.url : '' } download>Download</Button>
+            </div>
+            <Derivatives media={this.state.selectedMedia}/>
+
+            <h3>Delete media asset:</h3>
+            <div id='div1'>
+              <Button className="deleteMedia" variant="contained"  onClick={() => this.deleteRow(this.state.selectedMedia.id)}>Delete</Button>
             </div>
           </form>
           

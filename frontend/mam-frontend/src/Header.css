@@ -21,7 +21,7 @@
     justify-content: space-between;
     position:sticky;
     background-color: black;
-    z-index: 100;
+    z-index: 2000;
     top: 0;
     box-shadow: 8px 5px 8px -9px rgba(0,0,0,0.75);
 
