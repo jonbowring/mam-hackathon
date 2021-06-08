@@ -134,12 +134,16 @@ public class MediaController {
 	
 	// GET's a file by id
 	@GetMapping("/media/{id}/file")
-	@ResponseBody byte[] oneFile(@PathVariable Long id) throws NoSuchKeyException, S3Exception, AwsServiceException, SdkClientException, IOException {
+	@ResponseBody byte[] oneFile(@PathVariable String id) throws NoSuchKeyException, S3Exception, AwsServiceException, SdkClientException, IOException {
+		
+		// Get the filename from the DB
+		Media media = repository.findById(id)
+				.orElseThrow(() -> new MediaNotFoundException(id));
 		
 		// Build a request to download the file from S3
 		GetObjectRequest getObjectRequest = GetObjectRequest.builder()
 		        .bucket(s3Bucket)
-		        .key("test.png")
+		        .key(id + "/" + media.getFileName())
 		        .build();
 		
 		// Download the file

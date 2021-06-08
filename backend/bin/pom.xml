@@ -103,7 +103,8 @@
 		        <version>2.15.15</version>
 		        <type>pom</type>
 		        <scope>import</scope>
-		      </dependency>
+		</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -139,7 +140,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					
 					<plugin>
 				        <groupId>org.apache.maven.plugins</groupId>
 				        <artifactId>maven-compiler-plugin</artifactId>
