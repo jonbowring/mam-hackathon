@@ -2,16 +2,42 @@
 {
   display: flex;
   margin-left: 0%;
+  height: 100%;
+  min-height: 100vh;
+  position: relative;
+  top: 0;
+  left: 0;
 }
 .sidebar
 {
  justify-content: flex-start;
  }
 
+#root {
+  height: 100%;
+  min-height: 100vh;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
 .App {
   position: relative;
   top: 0;
   left: 0;
+  height: 100%;
+  min-height: 100vh;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.app-content-inner {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .app-aside-hidden, .app-aside-visible {
@@ -39,6 +65,22 @@
 
 .app-aside-visible {
   right: 0vw;
+}
+
+.upload-file-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-file-name {
+  padding: 0.5rem;
+  background: #e0e0e0;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .closeButton {
@@ -120,17 +162,22 @@
   flex-direction: row;
   margin-right: 40vw;
 }
+
+.app-content {
+  width: 100%;
+}
+
 .show
 {
   display: flex;
   flex-direction: row;
   margin-left: 0vw;
+  width: 100%;
 }
 .app-content-menu
 {
   margin: auto;
-  width: 250px;
-  height: 180px;
+  
   border: 3px solid black;
   position: relative;
   z-index: 10;
