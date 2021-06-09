@@ -17,9 +17,29 @@ function Derivatives(props) {
 
   if(media !== null) {
     if(media.derivatives !== null) {
-      console.log(Object.entries(media.derivatives));
       const nodes = Object.entries(media.derivatives).map((pair, index) => {
         return <div key={pair[0]}><label className="popLabel">{ pair[0] }</label><Button className="downloadMedia" variant="contained" href={ pair[1] } download>Download</Button></div>
+      });
+      return nodes;
+    }
+    else {
+      return <span/>
+    }
+  }
+  else {
+    return <span/>
+  }
+}
+
+function FileList(props) {
+  
+  const files = props.files;
+
+  if(files !== null) {
+    if(files !== null) {
+      const nodes = Object.entries(files).map((pair, index) => {
+        
+        return <span key={ pair[1].name } className="upload-file-name">{ pair[1].name }</span>
       });
       return nodes;
     }
@@ -42,6 +62,7 @@ class App extends React.Component {
     this.fetchMedia = this.fetchMedia.bind(this);
     this.searchMedia = this.searchMedia.bind(this);
     this.DisplayEntireMedia = this.DisplayEntireMedia.bind(this);
+    this.handleFilenameChange = this.handleFilenameChange.bind(this);
     this.state = {
       medias: [],
       selectedMedia: null,
@@ -54,7 +75,8 @@ class App extends React.Component {
       MediaClass:'app-content-hide',
       MediaVisible:false,
       hierarchyCode:'1234-1',
-      allmedias:[]
+      allmedias:[],
+      fileList: {}
      }
    
   }
@@ -74,6 +96,7 @@ class App extends React.Component {
   }
  
   DisplayEntireMedia() {
+    
     axios({
       method: 'get',
       url: 'http://localhost:8080/media'
@@ -108,6 +131,7 @@ class App extends React.Component {
     let sideVisible = false;
     let showClass = '';
     let showVisible = true;
+
     if(!this.state.popoutVisible) {
       
       popoutClass = 'app-aside-visible';
@@ -124,6 +148,8 @@ class App extends React.Component {
         'showVisible':showVisible,
         'sideClass':sideClass,
         'sideVisible':sideVisible,
+        'MediaVisible': false,
+        'MediaClass': 'app-content-hide'
       });
 
     }
@@ -177,6 +203,12 @@ class App extends React.Component {
         
       });
   }
+  
+  handleFilenameChange(event) {
+    console.log(event.target.files);
+    this.setState( { fileList: event.target.files } );
+  }
+  
   handleAttrChange(id, event) {
     
     axios({
@@ -207,6 +239,7 @@ class App extends React.Component {
       }
     
     // Loop through each file and append them to the form
+    console.log(this.fileInput.current.files);
     Object.keys(this.fileInput.current.files).forEach(key => {
       formData.append("files", this.fileInput.current.files[key]);
     });
@@ -222,6 +255,7 @@ class App extends React.Component {
 
   }
   handleMedia(e){
+    
     if(this.state.MediaVisible)
     {
     this.setState(state=>({
@@ -232,8 +266,12 @@ class App extends React.Component {
       }else if(!this.state.MediaVisible)
         {
             this.setState(state=>({
-            MediaVisible:true,
-             MediaClass:'app-content-menu'
+              MediaVisible:true,
+              MediaClass:'app-content-menu',
+              popoutClass: 'app-aside-hidden', 
+              popoutVisible: false,
+              showClass:'show',
+              showVisible:true,
         }));
         }
   }
@@ -285,12 +323,15 @@ class App extends React.Component {
           <div className={ this.state.MediaClass }>
             <center>
               <h1>Media</h1>
-              <br/><br/>
               <form onSubmit={this.handleSubmit}>
+                <div className="upload-file-list">
+                  <FileList files={ this.state.fileList }/>
+                </div>
                 <Button onClick={() => this.fileInput.current && this.fileInput.current.click()} >
-                <PhotoLibraryIcon/>
+                  <PhotoLibraryIcon/>
                 </Button>
-                <input type="file" ref={this.fileInput} multiple style={{ display: 'none'}}   />
+                <input type="file" ref={this.fileInput} multiple style={{ display: 'none'}}  onChange={(event) => this.handleFilenameChange(event)} />
+                
                 <Button variant="contained" type="submit">Submit</Button>
               </form>
             </center>

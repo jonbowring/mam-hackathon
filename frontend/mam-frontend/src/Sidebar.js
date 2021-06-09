@@ -27,7 +27,7 @@ export class Sidebar extends Component {
     this.mediaLibrary= this.mediaLibrary.bind(this);
     }
         display(){
-
+            
             if(this.state.setVisible)
             {
             this.setState(state=>({
@@ -35,13 +35,14 @@ export class Sidebar extends Component {
                 setClass:'new',
                 setVisibleMenu:true,
                 menu:'menu',
+                
              }
             ));
         }
         else if(!this.state.setVisible)
         {
             this.setState(state=>({
-                setVisible:true,
+                setVisible:false,
                 setClass:'right',
             }
             ));
@@ -49,6 +50,7 @@ export class Sidebar extends Component {
     }
    
     mediaLibrary(e){
+        
         if(this.state.setVisibleMenu)
         {
         this.setState(state=>({
@@ -56,14 +58,17 @@ export class Sidebar extends Component {
             menu:'',
             setVisible:true,
             setClass:'right',
+            
         }
         ));
         }
         else if(!this.state.setVisibleMenu)
         {
+            this.props.displayMedia();
             this.setState(state=>({
-                setVisibleMenu:false,
+                setVisibleMenu:true,
                 menu:'menu',
+                
             }))
         }
         axios({
@@ -118,11 +123,11 @@ export class Sidebar extends Component {
                          <div className={this.state.menu}>
                          <ProSidebar>
                          { this.state.data?.map((post, i) => (
-                         <Menu iconShape="square">
+                         <Menu key={post.hierarchyName} iconShape="square">
                         
                          <SubMenu title={post.hierarchyName} >
                          {post.children?.map((po,i) =>
-                        <MenuItem  onClick= {(e) =>  this.props.mediaAction(po.hierarchyCode,e)}>{po.hierarchyName}</MenuItem>
+                        <MenuItem key={po.hierarchyCode}  onClick= {(e) =>  this.props.mediaAction(po.hierarchyCode,e)}>{po.hierarchyName}</MenuItem>
                         )}
                         </SubMenu> 
                         </Menu >
