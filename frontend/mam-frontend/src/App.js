@@ -83,7 +83,7 @@ class App extends React.Component {
   componentDidMount() {
     axios({
       method: 'get',
-      url: 'http://localhost:8080/media'
+      url: 'http://mam-hackathon.com:8080/media'
     })
     .then((response) => {
       let newMedias = this.state.medias;
@@ -99,7 +99,7 @@ class App extends React.Component {
     
     axios({
       method: 'get',
-      url: 'http://localhost:8080/media'
+      url: 'http://mam-hackathon.com:8080/media'
     })
     .then((response) => {
       this.setState(state=>({
@@ -167,7 +167,7 @@ class App extends React.Component {
 
 
   deleteRow(id, e){  
-    axios.delete(`http://localhost:8080/media/${id}`)  
+    axios.delete(`http://mam-hackathon.com:8080/media/${id}`)  
       .then(res => {  
         console.log(res);  
         console.log(res.data);  
@@ -182,7 +182,7 @@ class App extends React.Component {
   mediaLibrary(e){
     axios({
       method: 'get',
-      url: `http://localhost:8080/mediaHierarchy`
+      url: `http://mam-hackathon.com:8080/mediaHierarchy`
       })
       .then((response) => {
       let newHierarchy = this.state.hierarchies;
@@ -213,7 +213,7 @@ class App extends React.Component {
     
     axios({
 			method: 'put',
-			url: `http://localhost:8080/media/${id}`,
+			url: `http://mam-hackathon.com:8080/media/${id}`,
 			data: {
         [event.target.id]: event.target.value
       }
@@ -230,7 +230,7 @@ class App extends React.Component {
     event.preventDefault();
 
     // Define API constants
-    const url = 'http://localhost:8080/media';
+    const url = 'http://mam-hackathon.com:8080/media';
     const formData = new FormData();
     const config = {
         headers: {
@@ -278,7 +278,7 @@ class App extends React.Component {
   fetchMedia(hierarchyCode,e) {
     axios({
       method: 'get',
-      url: 'http://localhost:8080/media'
+      url: 'http://mam-hackathon.com:8080/media'
     })
     .then((response) => {
       this.setState(state=>({
