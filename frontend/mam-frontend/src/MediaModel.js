@@ -18,7 +18,7 @@ export class MediaModel {
 		
 		axios({
 			method: 'get',
-			url: 'http://localhost:8080/media/' + this.id
+			url: 'http://mam-hackathon.com:8080/media/' + this.id
 		})
 		.then((response) => {
 			console.log(response);
@@ -31,7 +31,7 @@ export class MediaModel {
 	update(data) {
 		axios({
 			method: 'put',
-			url: 'http://localhost:8080/media/' + this.id,
+			url: 'http://mam-hackathon.com:8080/media/' + this.id,
 			data: data
 		})
 		.then((response) => {
@@ -42,7 +42,7 @@ export class MediaModel {
 	delete() {
 		axios({
 			method: 'delete',
-			url: 'http://localhost:8080/media/' + this.id
+			url: 'http://mam-hackathon.com:8080/media/' + this.id
 		})
 		.then((response) => {
 			console.log(response)

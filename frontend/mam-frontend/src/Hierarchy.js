@@ -19,7 +19,7 @@ function MediaLibrary(e){
 }
     axios({
       method: 'get',
-      url: `http://localhost:8080/mediaHierarchy`
+      url: `http://mam-hackathon.com:8080/mediaHierarchy`
       })
       .then((response) => {
        response.data._embedded.mediaHierarchies.map((data, i) => {
