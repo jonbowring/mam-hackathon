@@ -22,4 +22,8 @@
        <parameter name="templateName" value="MAM Assignment"/>
        <parameter name="hasOpenInNewWindow" value="false"/>
    </tab>
+   <tab i18NKey="MAM Item Media" id="MamItemMedia" permissionId="web.article.detail.tabs.mamitemmedia" position="17" rootEntity="Article" tabType="Preview">
+       <parameter name="templateName" value="MAM Item Media"/>
+       <parameter name="hasOpenInNewWindow" value="false"/>
+   </tab>
 </tabDefinitions>
