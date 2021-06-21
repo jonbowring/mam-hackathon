@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ppm-export-template sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.file.FileManager" name="MAM Assignment" version="13" proxy="121595[|]ExportTemplate_1572423771408027[|]3800">
+<ppm-export-template sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.file.FileManager" name="MAM Assignment" version="13" proxy="121595[|][|]3800">
   <template>
     <modules_content_type>html</modules_content_type>
     <fileEncoding>UTF-8</fileEncoding>
@@ -12,7 +12,7 @@
   </template>
   <changelog>
     <created byintid="108" byid="pim" byname="Ten, Tina" datetime="1622522606706"/>
-    <lastchanged byintid="108" byid="pim" byname="Ten, Tina" datetime="1622523583923"/>
+    <lastchanged byintid="108" byid="pim" byname="Ten, Tina" datetime="1624244235759"/>
   </changelog>
   <functionManager sys-id="1" factory-id="hlr.texttemplate.FunctionManager.factory" context="export"/>
   <alias>
@@ -23,7 +23,7 @@
   <variables>
     <variable id="MAM_HOST" name="MAM_HOST" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
       <description><![CDATA[]]></description>
-      <value><![CDATA[192.168.93.1]]></value>
+      <value><![CDATA[mam-hackathon.com]]></value>
     </variable>
     <variable id="MAM_PORT" name="MAM_PORT" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
       <description><![CDATA[]]></description>
@@ -33,9 +33,9 @@
       <description><![CDATA[]]></description>
       <value><![CDATA[Basic cGltOkhlaWxlcjMzIQ]]></value>
     </variable>
-    <variable id="P360_HOST" name="P360_HOST" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" updatemode="0" valuemode="0">
+    <variable id="P360_HOST" name="P360_HOST" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
       <description><![CDATA[]]></description>
-      <value><![CDATA[192.168.244.163]]></value>
+      <value><![CDATA[192.168.244.166]]></value>
     </variable>
     <variable id="P360_PORT" name="P360_PORT" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="variable" hostobject="" reftype="" refobject="" updatemode="0" valuemode="0">
       <description><![CDATA[]]></description>
@@ -77,8 +77,10 @@ This parameter is only effective with non-static item assortments.]]></descripti
   </exportpoststeps>
   <exportfileconfiguration advanced="false"/>
   <modules sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.export.core.model.ExportTemplateModule">
-    <module name=" Header" id="1622522606706">
-      <datatype type=""/>
+    <module name="Header" id="1622522606706">
+      <datatype type="">
+        <datatype_params/>
+      </datatype>
       <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1622522606706" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
       <content><![CDATA[<!doctype html>
 
@@ -192,16 +194,19 @@ This parameter is only effective with non-static item assortments.]]></descripti
 					// Build the request data
 					var body = JSON.stringify({
 							"columns": [
-								{ "identifier": "ArticleAttributeValue.Value(\"Type\", \"English\", \"DEFAULT\")" },
-								{ "identifier": "ArticleAttributeValue.Value(\"ID\", \"English\", \"DEFAULT\")" },
-								{ "identifier": "ArticleAttributeValue.Value(\"Filename\", \"English\", \"DEFAULT\")" },
-								{ "identifier": "ArticleAttributeValue.Value(\"URL\", \"English\", \"DEFAULT\")" }
+								{ "identifier": "ArticleCloudMediaMap.Type" },
+								{ "identifier": "ArticleCloudMediaMap.ID" },
+								{ "identifier": "ArticleCloudMediaMap.Filename" },
+								{ "identifier": "ArticleCloudMediaMap.Url" }
 							],
 							"rows": [
 								{
 									"object": {
 										"id": `'${itemno}'@'${catalogue}'`
 									},
+									"qualification": {
+						                "mediaType": `${type}`
+						            },
 									"values": [
 										`${type}`,
 										`${id}`,
@@ -217,7 +222,7 @@ This parameter is only effective with non-static item assortments.]]></descripti
 					// Save the assignment back into PIM
 					$.ajax({
 						method: "POST",
-						url: "http://{%P360_HOST}:{%P360_PORT}/rest/V1.0/list/Article",
+						url: "http://{%P360_HOST}:{%P360_PORT}/rest/V1.0/list/Article/ArticleCloudMediaMap",
 						headers: {
 							'Content-Type': 'application/json',
 							'Accept': 'application/json',
@@ -259,14 +264,18 @@ This parameter is only effective with non-static item assortments.]]></descripti
 				]]></content>
     </module>
     <module name="Media Types" id="1622522667240">
-      <datatype type=""/>
+      <datatype type="">
+        <datatype_params/>
+      </datatype>
       <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1622522667240" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
       <content><![CDATA[<option value="Standard image">Standard image</option>
 					<option value="Data sheet">Data sheet</option>
 					<option value="Other">Other</option>]]></content>
     </module>
     <module name="Footer" id="1622522674604">
-      <datatype type=""/>
+      <datatype type="">
+        <datatype_params/>
+      </datatype>
       <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1622522674604" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
       <content><![CDATA[</select>
 				<label class="tag">Search:</label>
