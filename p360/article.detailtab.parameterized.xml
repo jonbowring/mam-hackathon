@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tabDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ParameterizedDetailTabs.xsd">
+    <tab i18NKey="%web.article.detail.tab.graph" id="articleGraphDetailTab" permissionId="web.article.detail.tabs.graph" position="5" rootEntity="Article" tabType="Graph"/>
+    <tab i18NKey="%web.detail.tab.history" id="ArticleHistoryDetailTab" permissionId="web.detail.tab.historyArticle" position="145" rootEntity="Article" tabType="History"/>
+    <tab i18NKey="%web.article.detail.tab.characteristic" id="articleCharacteristicDetailTab" permissionId="web.article.detail.tabs.characteristics" position="61" rootEntity="Article" tabType="Characteristic"/>
+    <tab i18NKey="%web.article.detail.tab.preview" id="articlePreviewTab" permissionId="web.article.detail.tabs.multichannelpreview" position="15" rootEntity="Article" tabType="Preview"/>
+
+	<!-- Custom -->
+    <tab i18NKey="Marketing Characteristics" id="articleCharacteristicDetailTabMarketing" permissionId="web.article.detail.tabs.characteristics" position="63" rootEntity="Article" tabType="Characteristic">
+      <parameter name="filterCategories" value="Shipping"/>
+      <parameter name="filterType" value="exclude"/>
+    </tab>
+    <tab i18NKey="Logistical Characteristics" id="articleCharacteristicDetailTabLogistical" permissionId="web.article.detail.tabs.characteristics" position="62" rootEntity="Article" tabType="Characteristic">
+      <parameter name="filterCategories" value="Shipping"/>
+      <parameter name="filterType" value="include"/>
+   </tab>    
+   <tab i18NKey="Web Shop" id="Details" permissionId="web.article.detail.tabs.webshoppreview" position="17" rootEntity="Article" tabType="Preview">
+       <parameter name="templateName" value="Item - Web, IBM Aurora (editable)"/>
+       <parameter name="hasOpenInNewWindow" value="false"/>
+   </tab>
+   <tab i18NKey="MAM Assignment" id="MamAssignment" permissionId="web.article.detail.tabs.mamassignment" position="17" rootEntity="Article" tabType="Preview">
+       <parameter name="templateName" value="MAM Assignment"/>
+       <parameter name="hasOpenInNewWindow" value="false"/>
+   </tab>
+   <tab i18NKey="MAM Item Media" id="MamItemMedia" permissionId="web.article.detail.tabs.mamitemmedia" position="17" rootEntity="Article" tabType="Preview">
+       <parameter name="templateName" value="MAM Item Media"/>
+       <parameter name="hasOpenInNewWindow" value="false"/>
+   </tab>
+</tabDefinitions>

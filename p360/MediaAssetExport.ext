@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ppm-export-template sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.file.FileManager" name="MediaAssetExport" version="13" proxy="127595[|][|]3800">
+  <template>
+    <modules_content_type>txt</modules_content_type>
+    <fileEncoding>ISO-8859-1</fileEncoding>
+    <formatMap></formatMap>
+    <history></history>
+    <remarks><![CDATA[]]></remarks>
+    <exportloglevel>40</exportloglevel>
+    <purpose>DIRECTEXPORT</purpose>
+  </template>
+  <changelog>
+    <created byintid="1" byid="Administrator" byname="Administrator" datetime="1623327331016"/>
+    <lastchanged byintid="108" byid="pim" byname="Ten, Tina" datetime="1624244019167"/>
+  </changelog>
+  <functionManager sys-id="1" factory-id="hlr.texttemplate.FunctionManager.factory" context="export"/>
+  <alias>
+    <aliasfield name="Article Cloud Media Map.Filename" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.Filename" identifier="ArticleCloudMediaMap.Filename85522d1defc28b37:28edecae:17a2c48877d:-7f0b" name="Filename"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Res_Text2G_03"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Article Cloud Media Map.Status" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.Status" identifier="ArticleCloudMediaMap.Status85522d1defc28b37:28edecae:17a2c48877d:-7f35" name="Status"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Res_Text100_01"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Article Cloud Media Map.Type" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.Type" identifier="ArticleCloudMediaMap.Type85522d1defc28b37:28edecae:17a2c48877d:-7f36" name="Type"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Std_LK_Text100_01"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Article Cloud Media Map.URL" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.Url" identifier="ArticleCloudMediaMap.Url85522d1defc28b37:28edecae:17a2c48877d:-7f34" name="URL"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Res_Text2G_01"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Item.Item no." datatype="DataTypeArticleAssortment"><![CDATA[<field initial-identifier="Article.SupplierAID" identifier="Article.SupplierAID462ba9b00a8a1eb8:-32a60b41:179f5d806c3:-7f99" name="%field.Article.SupplierAID.name"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleType.SupplierAid"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleType" dest-entity-type="ArticleType" revision-token="1"/></field-path></field>]]></aliasfield>
+  </alias>
+  <variables/>
+  <dataproviders>
+    <dataprovider name="Item list" id="1623327281086" typeid="ArticleList" sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.dataprovider.Parameter">
+      <parameter id="catalog" name="Catalog" datatype="DataTypeCatalogWithNotSpecifiedValue" mandatory="true" editable="true" many="false" hosttype="dataProvider" hostobject="1623327281086" reftype="" refobject="">
+        <description><![CDATA[A supplier catalog or the master catalog]]></description>
+        <value><![CDATA[1[|]MASTER[|]2900]]></value>
+      </parameter>
+      <parameter id="assortment" name="Assortment" datatype="DataTypeArticleAssortment" mandatory="true" editable="true" many="false" hosttype="dataProvider" hostobject="1623327281086" reftype="" refobject="">
+        <description><![CDATA[An item assortment or a list of items]]></description>
+        <value><![CDATA[]]></value>
+      </parameter>
+      <parameter id="updateAssortment" name="Update assortment" datatype="DataTypeBoolean" mandatory="true" editable="true" many="false" hosttype="dataProvider" hostobject="1623327281086" reftype="" refobject="">
+        <description><![CDATA[Do you want to update the assigned assortment directly before the export?
+This parameter is only effective with non-static item assortments.]]></description>
+        <value><![CDATA[]]></value>
+      </parameter>
+      <parameter id="ArticleListDataProvider.revision" name="Version" datatype="DataTypeRevision" mandatory="true" editable="true" many="false" hosttype="dataProvider" hostobject="1623327281086" reftype="" refobject="">
+        <description><![CDATA[Version of exported data]]></description>
+        <value><![CDATA[1]]></value>
+      </parameter>
+    </dataprovider>
+  </dataproviders>
+  <exportpoststeps>
+    <exportpoststep name="Add file" id="IncludeStaticFile" sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.dataprovider.Parameter">
+      <parameter id="staticFile" name="File" datatype="DataTypeString" mandatory="true" editable="false" many="false" hosttype="exportPostStep" hostobject="Add file" reftype="" refobject="">
+        <description><![CDATA[The name of the file to be added.]]></description>
+        <value><![CDATA[files.zip]]></value>
+      </parameter>
+      <parameter id="PARAM_CANCEL_IN_ERROR_CASE" name="Cancel export in case of error" datatype="DataTypeBoolean" mandatory="true" editable="false" many="false" hosttype="exportPostStep" hostobject="Add file" reftype="" refobject="">
+        <description><![CDATA[Specifies if the export run should be canceled if an error occurs during the post-export step processing, or if errors should only be logged.]]></description>
+        <value><![CDATA[0]]></value>
+      </parameter>
+    </exportpoststep>
+    <exportpoststep name="Download the files" id="ExecCommand" sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.dataprovider.Parameter">
+      <parameter id="command" name="Command file" datatype="DataTypeString" mandatory="true" editable="false" many="false" hosttype="exportPostStep" hostobject="Download the files" reftype="" refobject="">
+        <description><![CDATA[The name of the command file and command line parameter to be executed.
+The full path for the export file can be used as a command line parameter with "<exportfilepath>",
+and the export directory is available with the placeholder "<exportdir>".]]></description>
+        <value><![CDATA[MediaAssetDownloader.bat <exportdir>]]></value>
+      </parameter>
+      <parameter id="logCmdOutput" name="Log output" datatype="DataTypeLogType" mandatory="false" editable="false" many="false" hosttype="exportPostStep" hostobject="Download the files" reftype="" refobject="">
+        <description><![CDATA[Specifies what type of output of the executed command file is to be written to the export log. Default value: "nothing".]]></description>
+        <value><![CDATA[2]]></value>
+      </parameter>
+      <parameter id="PARAM_CANCEL_IN_ERROR_CASE" name="Cancel export in case of error" datatype="DataTypeBoolean" mandatory="true" editable="false" many="false" hosttype="exportPostStep" hostobject="Download the files" reftype="" refobject="">
+        <description><![CDATA[Specifies if the export run should be canceled if an error occurs during the post-export step processing, or if errors should only be logged.]]></description>
+        <value><![CDATA[0]]></value>
+      </parameter>
+    </exportpoststep>
+  </exportpoststeps>
+  <exportfileconfiguration advanced="false">
+    <exportfiles sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.file.ExportFile">
+      <exportfile id="0000" name="config.txt" contenttype="txt" encoding="ISO-8859-1"/>
+    </exportfiles>
+  </exportfileconfiguration>
+  <modules sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.export.core.model.ExportTemplateModule">
+    <module name="Item" id="1623328990085" dataprovider="1623327281086" parallelProcessing="true">
+      <datatype type="DataTypeArticleAssortment">
+        <datatype_params/>
+      </datatype>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1623328990085" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[{$MediaAsset}]]></content>
+    </module>
+    <module name="MediaAsset" id="1623329051635" parent="1623328990085" dataprovider="1623327281086">
+      <datatype type="DataTypeRepositorySubEntity_ArticleCloudMediaMap">
+        <datatype_params>
+          <param datatype_entityname="Article Cloud Media Map" start-entity-type="ArticleType" dest-entity-type="ArticleDomainType" revision-token="1">
+            <logical-key type="ArticleDomainType.LK.EntityId" value="32100"/>
+            <logical-key type="ArticleDomainType.LK.Res_LK_Int_01" value="9"/>
+            <logical-key type="ArticleDomainType.LK.TargetMarket" value="US"/>
+            <logical-key type="ArticleDomainType.LK.Std_LK_Text100_02" value="DEFAULT"/>
+            <logical-key type="ArticleDomainType.LK.Res_LK_Text100_01" value="DEFAULT"/>
+            <logical-key type="ArticleDomainType.LK.Channel" value="1[|][|]6800"/>
+          </param>
+        </datatype_params>
+      </datatype>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1623329051635" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[url = "{&Article Cloud Media Map.URL}"
+output = "files/{&Article Cloud Media Map.Filename}"
+]]></content>
+    </module>
+  </modules>
+</ppm-export-template>

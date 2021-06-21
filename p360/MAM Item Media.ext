@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ppm-export-template sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.file.FileManager" name="MAM Item Media" version="13" proxy="129595[|][|]3800">
+  <template>
+    <modules_content_type>html</modules_content_type>
+    <fileEncoding>UTF-8</fileEncoding>
+    <formatMap></formatMap>
+    <history></history>
+    <remarks><![CDATA[]]></remarks>
+    <exportloglevel>40</exportloglevel>
+    <purpose preview_single="true" preview_maxcount="1" preview_editable="false">PREVIEW</purpose>
+  </template>
+  <changelog>
+    <created byintid="108" byid="pim" byname="Ten, Tina" datetime="1624258480292"/>
+    <lastchanged byintid="108" byid="pim" byname="Ten, Tina" datetime="1624263297805"/>
+  </changelog>
+  <functionManager sys-id="1" factory-id="hlr.texttemplate.FunctionManager.factory" context="export"/>
+  <alias>
+    <aliasfield name="Article Cloud Media Map.Filename" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.Filename" identifier="ArticleCloudMediaMap.Filename26bb9dee5412fc10:-47d31ffe:17a2cad04bf:-7ee5" name="Filename"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Res_Text2G_03"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Article Cloud Media Map.ID" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.ID" identifier="ArticleCloudMediaMap.ID26bb9dee5412fc10:-47d31ffe:17a2cad04bf:-7eee" name="ID"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Res_Text2G_02"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Article Cloud Media Map.Type" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.Type" identifier="ArticleCloudMediaMap.Type26bb9dee5412fc10:-47d31ffe:17a2cad04bf:-7ef0" name="Type"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Std_LK_Text100_01"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+    <aliasfield name="Article Cloud Media Map.URL" datatype="DataTypeRepositorySubEntity_ArticleCloudMediaMap"><![CDATA[<field initial-identifier="ArticleCloudMediaMap.Url" identifier="ArticleCloudMediaMap.Url26bb9dee5412fc10:-47d31ffe:17a2cad04bf:-7ef1" name="URL"><field-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.FieldPath" dest-field-type="ArticleDomainType.Res_Text2G_01"><entity-path sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.repository.path.EntityPath" start-entity-type="ArticleDomainType" dest-entity-type="ArticleDomainType" revision-token="1"/></field-path></field>]]></aliasfield>
+  </alias>
+  <variables/>
+  <dataproviders>
+    <dataprovider name="Item list" id="1624247271776" typeid="ArticleList" sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.dataprovider.Parameter">
+      <parameter id="catalog" name="Catalog" datatype="DataTypeCatalogWithNotSpecifiedValue" mandatory="true" editable="true" many="false" hosttype="dataProvider" hostobject="1624247271776" reftype="" refobject="">
+        <description><![CDATA[A supplier catalog or the master catalog]]></description>
+        <value><![CDATA[1[|]MASTER[|]2900]]></value>
+      </parameter>
+      <parameter id="assortment" name="Assortment" datatype="DataTypeArticleAssortment" mandatory="false" editable="true" many="false" hosttype="dataProvider" hostobject="1624247271776" reftype="" refobject="">
+        <description><![CDATA[An item assortment or a list of items]]></description>
+        <value><![CDATA[]]></value>
+      </parameter>
+      <parameter id="updateAssortment" name="Update assortment" datatype="DataTypeBoolean" mandatory="false" editable="true" many="false" hosttype="dataProvider" hostobject="1624247271776" reftype="" refobject="">
+        <description><![CDATA[Do you want to update the assigned assortment directly before the export?
+This parameter is only effective with non-static item assortments.]]></description>
+        <value><![CDATA[]]></value>
+      </parameter>
+      <parameter id="ArticleListDataProvider.revision" name="Version" datatype="DataTypeRevision" mandatory="true" editable="false" many="false" hosttype="dataProvider" hostobject="1624247271776" reftype="" refobject="">
+        <description><![CDATA[Version of exported data]]></description>
+        <value><![CDATA[1]]></value>
+      </parameter>
+    </dataprovider>
+  </dataproviders>
+  <exportpoststeps>
+    <exportpoststep name="Add file" id="IncludeStaticFile" sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.texttemplate.core.dataprovider.Parameter">
+      <parameter id="staticFile" name="File" datatype="DataTypeString" mandatory="true" editable="true" many="false" hosttype="exportPostStep" hostobject="Add file" reftype="" refobject="">
+        <description><![CDATA[The name of the file to be added.]]></description>
+        <value><![CDATA[mam-10-item-preview.zip]]></value>
+      </parameter>
+      <parameter id="PARAM_CANCEL_IN_ERROR_CASE" name="Cancel export in case of error" datatype="DataTypeBoolean" mandatory="true" editable="true" many="false" hosttype="exportPostStep" hostobject="Add file" reftype="" refobject="">
+        <description><![CDATA[Specifies if the export run should be canceled if an error occurs during the post-export step processing, or if errors should only be logged.]]></description>
+        <value><![CDATA[0]]></value>
+      </parameter>
+    </exportpoststep>
+  </exportpoststeps>
+  <exportfileconfiguration advanced="false"/>
+  <modules sys-id="1" sys-type="dp" sys-class="com.heiler.ppm.export.core.model.ExportTemplateModule">
+    <module name="Header" id="1624258480292">
+      <datatype type="">
+        <datatype_params/>
+      </datatype>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1624258480292" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Media assets assigned to Product 360">
+		<meta name="keywords" content="mam,assign">
+		<meta name="author" content="Jonathon Bowring">
+		<title>Item Media Assets</title>
+		<link rel="stylesheet" href="styles.css" />
+		<link rel="icon" type="image/png" href="favicon.png">
+		<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+		<script>
+
+			// Execute when the document is ready
+			$(document).ready(function() {
+
+				// -----------------
+				// Event handlers
+				// -----------------
+
+				// Display the loading icon when waiting for ajax
+				$(document)
+					.hide()  // Hide it initially
+					.ajaxStart(function() {
+						$('.loading').show();
+					})
+					.ajaxStop(function() {
+						$('.loading').hide();
+					});
+
+				// Display the selected media on click
+				$('.mediaRow').on('click', function(event) {
+					
+					// Clear any previous selection
+					$('tbody tr').removeClass('selected');
+					$(this).addClass('selected');
+
+					// Get the row id
+					var id = $(event.target).closest('tr').find(".listID").html();
+					
+					// Get all media metadata when the page loads
+					$.ajax({
+						method: "GET",
+						url: `http://mam-hackathon.com:8080/media/${id}`
+					})
+					.done(function(res) {
+						console.log(res);
+
+						// Display the returned values
+						$('#metaImage').attr('src',res.url);
+						$('#id').html(res.id);
+						$('#filename').html(res.fileName);
+						$('#extension').html(res.fileExtension);
+						$('#mimeType').html(res.mimeType);
+						$('#fileSize').html(res.fileSize);
+						$('#encoding').html(res.fileEncoding);
+						$('#url').html(`<a href="${res.url}">${res.url}</a>`);
+						$('#width').html(res.width);
+						$('#height').html(res.height);
+						$('#classification').html(res.hierarchyCode);
+
+						// Loop through any derivatives and add the download links
+						$('.downloads').html('');
+						for(const [key, value] of Object.entries(res.derivatives)) {
+							$('.downloads').append(`<div class="metaPair">
+							<label class="metaLabel">${key}:</label>
+							<a class="metaButton" href="${value}" download>Download</a>
+						</div>`)
+						}
+
+						// Display the details
+						$('.mediaDetails').removeClass('hidden');
+
+						
+
+					})
+					.fail(function(err) {
+						console.log(err);
+					});
+
+				});
+
+				// Filter the assets using the search term
+				$('#search').on('input', function() {
+
+					// Get the search terms
+					var term = $(this).val();
+
+					if(term.length > 0) {
+						
+						// Hide all of the assets
+						$('tbody tr').hide();
+
+						// Search through each of the assets
+						$('tbody tr').each(function() {
+
+							var id = $(this).find('.listID').html();
+							var fileName = $(this).find('.listFilename').html();
+							
+							// Show the asset if the fileid contains the search term
+							if(id.toLowerCase().indexOf(term.toLowerCase()) >= 0) {
+								$(this).show();
+							}
+
+							// Show the asset if the filename contains the search term
+							if(fileName.toLowerCase().indexOf(term.toLowerCase()) >= 0) {
+								$(this).show();
+							}
+
+						});
+
+					}
+					else {
+
+						// Show all of the assets
+						$('tbody tr').show();
+					}
+
+				});
+
+				// Clear the search terms and the selection when the clear button is clicked
+				$('.clear').click(function() {
+					$('tbody tr').removeClass('selected');
+					$('tbody tr').show();
+					$('#search').val('');
+				});
+
+			});
+
+		</script>
+	</head>
+	<body>
+		
+		<header>
+			<form name="assign" id="assign">
+				<label class="tag">Type:</label>
+				<select id="type" name="type">
+					<option value="Standard image">Standard image</option>
+					<option value="Data sheet">Data sheet</option>
+					<option value="Other">Other</option>
+				</select>
+				<label class="tag">Search:</label>
+				<input type="text" name="search" id="search"/>
+				<label class="button clear">Clear</label>
+				
+			</form>
+			<img class="loading" src="ajax-loader.gif" alt="Loading..."/>
+		</header>
+		<main>
+			<table class="mediaList">
+				<thead>
+					<tr>
+						<th>Thumbnail</th>
+						<th>Type</th>
+						<th>Filename</th>
+						<th>ID</th>
+					</tr>
+				</thead>
+				<tbody>
+				]]></content>
+    </module>
+    <module name="Items" id="1624258523706" dataprovider="1624247271776" parallelProcessing="true">
+      <datatype type="DataTypeArticleAssortment">
+        <datatype_params/>
+      </datatype>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1624258523706" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[{$Media Assets}]]></content>
+    </module>
+    <module name="Media Assets" id="1624258530457" parent="1624258523706" dataprovider="1624247271776">
+      <datatype type="DataTypeRepositorySubEntity_ArticleCloudMediaMap">
+        <datatype_params>
+          <param datatype_entityname="Article Cloud Media Map" start-entity-type="ArticleType" dest-entity-type="ArticleDomainType" revision-token="1">
+            <logical-key type="ArticleDomainType.LK.EntityId" value="32100"/>
+            <logical-key type="ArticleDomainType.LK.Res_LK_Int_01" value="9"/>
+            <logical-key type="ArticleDomainType.LK.TargetMarket" value="US"/>
+            <logical-key type="ArticleDomainType.LK.Std_LK_Text100_02" value="DEFAULT"/>
+            <logical-key type="ArticleDomainType.LK.Res_LK_Text100_01" value="DEFAULT"/>
+            <logical-key type="ArticleDomainType.LK.Channel" value="1[|][|]6800"/>
+          </param>
+        </datatype_params>
+      </datatype>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1624258530457" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[<tr class="mediaRow">
+	<td class="listUrl"><img class="thumbnail" src="{?EscapeValue {&Article Cloud Media Map.URL}}" alt="thumbnail"/></td>
+	<td class="listType">{?EscapeValue {&Article Cloud Media Map.Type}}</td>
+	<td class="listFilename">{?EscapeValue {&Article Cloud Media Map.Filename}}</td>
+	<td class="listID">{?EscapeValue {&Article Cloud Media Map.ID}}</td>
+</tr>]]></content>
+    </module>
+    <module name="Footer" id="1624258538985">
+      <datatype type="">
+        <datatype_params/>
+      </datatype>
+      <cardinality_setting sys-id="1" factory-id="hlr.CardinalitySetting" identifier="1624258538985" log-threshold="WARNING" failure-action="NONE" mandatory="false"/>
+      <content><![CDATA[</tbody>
+			</table>
+			<div class="mediaDetails hidden">
+				<form name="mediaMeta" id="mediaMeta">
+					<img id="metaImage" src="" alt="Preview"/>
+					
+					<h3>Metadata:</h3>
+					
+					<div class="metaPair">
+						<label class="metaLabel">ID:</label>
+						<span class="metaField" id="id"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">Filename:</label>
+						<span class="metaField" id="filename"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">Extension:</label>
+						<span class="metaField" id="extension"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">MIME Type:</label>
+						<span class="metaField" id="mimeType"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">File Size:</label>
+						<span class="metaField" id="fileSize"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">Encoding:</label>
+						<span class="metaField" id="encoding"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">URL:</label>
+						<span class="metaField" id="url"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">Width:</label>
+						<span class="metaField" id="width"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">Height:</label>
+						<span class="metaField" id="height"></span>
+					</div>
+					<div class="metaPair">
+						<label class="metaLabel">Classification:</label>
+						<span class="metaField" id="classification"></span>
+					</div>
+
+					<h3>Downloads:</h3>
+
+					<div class="downloads">
+
+					</div>
+
+				</form>
+				
+			</div>
+		</main>
+		
+	</body>
+</html>]]></content>
+    </module>
+  </modules>
+</ppm-export-template>
