@@ -12,7 +12,7 @@
   </template>
   <changelog>
     <created byintid="108" byid="pim" byname="Ten, Tina" datetime="1624258480292"/>
-    <lastchanged byintid="108" byid="pim" byname="Ten, Tina" datetime="1624263297805"/>
+    <lastchanged byintid="108" byid="pim" byname="Ten, Tina" datetime="1624410033004"/>
   </changelog>
   <functionManager sys-id="1" factory-id="hlr.texttemplate.FunctionManager.factory" context="export"/>
   <alias>
@@ -127,6 +127,10 @@ This parameter is only effective with non-static item assortments.]]></descripti
 
 						// Loop through any derivatives and add the download links
 						$('.downloads').html('');
+						$('.downloads').append(`<div class="metaPair">
+							<label class="metaLabel">original:</label>
+							<a class="metaButton" href="${res.url}" download>Download</a>
+						</div>`)
 						for(const [key, value] of Object.entries(res.derivatives)) {
 							$('.downloads').append(`<div class="metaPair">
 							<label class="metaLabel">${key}:</label>
